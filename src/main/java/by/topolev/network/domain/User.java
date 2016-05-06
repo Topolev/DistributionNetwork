@@ -1,5 +1,6 @@
 package by.topolev.network.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -8,15 +9,26 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.ManyToAny;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 @Entity
 public class User {
 	@Id
 	@GeneratedValue
 	private Long id;
+	
+	@NotBlank
+	@Size(min=3, max=16)
 	private String username;
+	
+	@Email
+	@NotBlank
 	private String email;
+	
+	@NotBlank
+	@Size(min=3)
 	private String password;
 	@ManyToMany
 	@JoinTable(
@@ -24,7 +36,7 @@ public class User {
 			joinColumns = {@JoinColumn(name="user_id")},
 			inverseJoinColumns = {@JoinColumn(name="role_id")}
 	)
-	private Set<Role> roles;
+	private Set<Role> roles = new HashSet<Role>();
 
 	public Long getId() {
 		return id;
@@ -64,6 +76,10 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+	
+	public void setRole(Role role){
+		this.roles.add(role);
 	}
 	
 	

@@ -40,6 +40,6 @@
 	</beans:bean>
 
 	<!-- Определяем папку, в которой будем искать веб компоненты (контроллеры) -->
-	<context:component-scan base-package="by.topolev.network" />
+	<context:component-scan base-package="by.topolev.network.web.controller" />
 
 </beans:beans>
