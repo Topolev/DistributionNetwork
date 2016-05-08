@@ -16,8 +16,13 @@
 		<put-attribute name="body" value="/WEB-INF/views/index.jsp" />
 	</definition>
 
-	<definition name="register" extends="baseLayout">
+	<definition name="signup" extends="baseLayout">
 		<put-attribute name="csspage" value="style-register.css" />
-		<put-attribute name="body" value="/WEB-INF/views/register.jsp" />
+		<put-attribute name="body" value="/WEB-INF/views/signup.jsp" />
 	</definition>
+
+	<definition name="signin" template="/WEB-INF/views/signin.jsp">
+
+	</definition>
+
 </tiles-definitions>

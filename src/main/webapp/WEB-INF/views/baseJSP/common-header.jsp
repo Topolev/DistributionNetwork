@@ -1,5 +1,9 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+
 <spring:url value="/resources/img" var="baseUrlImg" />
+<spring:url value="/" var="baseUrl" />
 <div class="container">
 	<header>
 		<div id="wrap-logo">
@@ -19,8 +23,27 @@
 				<li><a href="">About project</a></li>
 				<li>
 					<div id="form-group">
-						<input placeholder="Search..."> <a href="" class="button"
-							id="signin">Sign in</a> <a href="" class="button">Sign up</a>
+						<input placeholder="Search...">
+						<sec:authorize access="isAuthenticated()">
+							<div class="btn-group">
+								<a href="" class="button dropdown-toggle" data-toggle="dropdown"
+									id="profile"> Profile <span
+									class="glyphicon glyphicon-user"></span> <span class="caret"></span>
+								</a>
+								<spring:url value="j_spring_security_logout" var="urlLogout"/>
+								<ul class="dropdown-menu" role="menu" id="menu-profile">
+									<li><a href="">Your profile</a></li>
+									<li><a href="">Settings</a></li>
+									<li class="divider"></li>
+									<li><a href="${urlLogout}">Sign Out</a></li>
+								</ul>
+							</div>
+						</sec:authorize>
+						<sec:authorize access="!isAuthenticated()">
+							<a href="${baseUrl}signin" class="button" id="signin">Sign in</a>
+							<a href="${baseUrl}signup" class="button">Sign up</a>
+						</sec:authorize>
+
 					</div>
 				</li>
 			</ul>

@@ -19,11 +19,16 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public User create(User user, String nameRole) {
-		
 		user.setPassword(DigestUtils.md5Hex(user.getPassword()));
 		Role role = roleDao.findByRole(nameRole);
 		user.setRole(role);
 		return userDao.create(user);
+	}
+
+	@Override
+	public User getUserByUsernameOrEmail(String usernameOrEmail) {
+		User user = userDao.findByUsernameOrEmail(usernameOrEmail);
+		return user;
 	}
 
 }

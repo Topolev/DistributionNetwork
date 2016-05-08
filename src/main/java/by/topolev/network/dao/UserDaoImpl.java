@@ -25,6 +25,12 @@ public class UserDaoImpl extends GenericDaoImpl<User, Long> implements UserDao{
 		User user = query.getSingleResult();
 		return user;
 	}
+	@Override
+	public User findByUsernameOrEmail(String usernameOrEmail) {
+		TypedQuery<User> query = em.createQuery("select u from User u where u.username=:username or u.email=:email", User.class);
+		User user = query.setParameter("username", usernameOrEmail).setParameter("email", usernameOrEmail).getSingleResult();
+		return user;
+	}
 	
 
 }

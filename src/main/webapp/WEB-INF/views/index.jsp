@@ -1,5 +1,11 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+
 <spring:url value="/resources/img" var="baseUrlImg" />
+
 <div id="slider">
 	<img src="${baseUrlImg}/back.jpg">
 	<div class="text-slider">
@@ -7,20 +13,31 @@
 			class="description-slider"> Calculate fault currents, flow
 			distribution power and voltage at nodes of scheme distribution. </span>
 	</div>
-	<div id="wrap-form">
-		<form class="form-horizontal" role="form">
-			<div class="form-group">
-				<input type="text" class="form-control" id="inputUsername"
-					placeholder="Username"> <input type="email"
-					class="form-control" id="inputEmail3" placeholder="Email">
-				<input type="password" class="form-control" id="inputPassword3"
-					placeholder="Password"> <span>Use at least one
-					letter, one numerecal and seven characters</span>
-				<button type="submit" class="btn btn-default">Sign up</button>
-			</div>
-		</form>
-	</div>
+	
+	<sec:authorize access="!isAuthenticated()">
+		<div id="wrap-form">
+			<c:url value="/signup" var="urlSignup" />
+			<form:form commandName="user" method="POST"
+				cssClass="form-horizontal" action="${urlSignup}">
+
+				<div class="form-group">
+					<form:input path="username" cssClass="form-control"
+						placeholder="Username" />
+					<form:input path="email" cssClass="form-control"
+						placeholder="Email" />
+					<form:password path="password" cssClass="form-control"
+						placeholder="Password" />
+					<span>Use at least one letter, one numerecal and seven
+						characters</span>
+					<button type="submit" class="btn btn-default">Sign up</button>
+				</div>
+
+			</form:form>
+		</div>
+	</sec:authorize>
 </div>
+
+
 
 <div id="description-ability">
 	<p>Welcome, engineer!</p>

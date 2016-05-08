@@ -13,24 +13,24 @@ import by.topolev.network.domain.User;
 import by.topolev.network.service.UserService;
 
 @Controller
-public class UserController {
+public class SignupController {
 	@Autowired
 	private UserService userService;
 	
-	@RequestMapping(value="/register", method=RequestMethod.GET)
+	@RequestMapping(value="/signup", method=RequestMethod.GET)
 	public String  showFormRegistration(ModelMap model){
 		User user = new User();
 		model.put("user", user);
-		return "register";
+		return "signup";
 	}
 	
-	@RequestMapping(value="/register", method=RequestMethod.POST)
+	@RequestMapping(value="/signup", method=RequestMethod.POST)
 	public String registrationUser(@Valid final User user, final BindingResult result){
 		if (result.hasErrors()){
 			System.out.println("error");
 			return null;
 		}
-		userService.create(user,"USER");
+		userService.create(user,"ROLE_USER");
 		return "index";
 	}
 }
