@@ -2,6 +2,8 @@ package by.topolev.network.service;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.*;
 import org.springframework.stereotype.Service;
 
 import by.topolev.network.dao.RoleDao;

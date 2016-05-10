@@ -10,7 +10,7 @@ http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 		<intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
 		<intercept-url pattern="/login.jsp*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<form-login login-page="/signin"
-			authentication-failure-url="/signin-fail" default-target-url="/" />
+			authentication-failure-url="/signin-fail" default-target-url="/calculate" />
 	</http>
 
 

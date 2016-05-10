@@ -21,6 +21,11 @@
 		<put-attribute name="body" value="/WEB-INF/views/signup.jsp" />
 	</definition>
 
+	<definition name="calculate" extends="baseLayout">
+		<put-attribute name="csspage" value="style-calculate.css" />
+		<put-attribute name="body" value="/WEB-INF/views/calculate.jsp" />
+	</definition>
+
 	<definition name="signin" template="/WEB-INF/views/signin.jsp">
 
 	</definition>
