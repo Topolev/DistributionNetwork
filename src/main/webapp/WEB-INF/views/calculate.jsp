@@ -68,8 +68,44 @@
 								 processData: false,
 								 contentType: false,
 								 cache: false,
-								 success: function(){
+								 success: function(data){
+									 var $sampleRow = $("<tr />");
+									 var $listData = [];
+									 var i = 0;
+									 $th = $("#transformer th").each(function(){
+									 	if ($(this).hasClass("input-field")){
+											$row = $("<td />",{
+														"class" : $(this).attr("class"),
+														"data-name" : $(this).attr("data-name"),
+														"data-value" : ""
+													});
+											$row.append("<input></input>");
+											$listData[i++] = $(this).attr("data-name");
+										}
+										if ($(this).hasClass("action-field")){
+											$row = $("<td/>",{
+														"class" : $(this).attr("class"),
+													});
+											$row.append('<a href="" class="delete"><span class="glyphicon glyphicon-remove"></span></a>');
+										}
+										$sampleRow.append($row);
+									 });
+									
+									
+									for (i=0; i<data.table.length; i++){
+										var $newRow = $sampleRow.clone();
+										for (j=0; j<$listData.length; j++){
+											if ($listData[j] in data.table[i]){
+												$newRow.find('[data-name="' +$listData[j] +'"]').attr("data-value",data.table[i][$listData[j]]);
+											}
+										}
+										$newRow.appendTo($("#test"));
+									}
+									
+									
+									
 									 
+									
 								 },
 								 error: function(){
 									 
@@ -94,25 +130,14 @@
 						<thead>
 							<tr>
 								<th class="action-field"></th>
-								<th class="input-field">id</th>
-								<th class="input-field">Type
-									<div>
-										<a href=""><span class="glyphicon glyphicon-menu-up"></span></a>
-										<a href=""><span class="glyphicon glyphicon-menu-down"></span></a>
-									</div>
-								</th>
-								<th class="input-field" data-name="s">S<sub>NOM</sub>, kVA
-								</th>
-								<th class="input-field" data-name="uVN">U<sub>VN</sub>,kV
-								</th>
-								<th class="input-field" data-name="uNN">U<sub>NN</sub>,kV
-								</th>
-								<th class="input-field" data-name="uk">u<sub>k</sub>,%
-								</th>
-								<th class="input-field" data-name="pHH">P<sub>HH</sub>, W
-								</th>
-								<th class="input-field" data-name="pKZ">P<sub>KZ</sub>, W
-								</th>
+								<th class="input-field" data-name="id">id</th>
+								<th class="input-field" data-name="type">Type</th>
+								<th class="input-field" data-name="s">S<sub>NOM</sub>, kVA</th>
+								<th class="input-field" data-name="uVN">U<sub>VN</sub>,kV</th>
+								<th class="input-field" data-name="uNN">U<sub>NN</sub>,kV</th>
+								<th class="input-field" data-name="uk">u<sub>k</sub>,%</th>
+								<th class="input-field" data-name="pHH">P<sub>HH</sub>, W</th>
+								<th class="input-field" data-name="pKZ">P<sub>KZ</sub>, W</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -143,6 +168,8 @@
 	</div>
 
 	<div class="tab" id="results">Результаты расчета</div>
+</div>
+<div id="test">
 </div>
 
 

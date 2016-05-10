@@ -1,6 +1,7 @@
 package by.topolev.network.web.controller;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Controller
 public class CalculateController {
@@ -17,12 +17,32 @@ public class CalculateController {
 		return "calculate";
 	}
 	
+	public class Dto {
+		public Collection<Transform> table = new ArrayList<Transform>();
+	};
+	public class Transform{
+		public Transform(String val){
+			this.type = val;
+		}
+		public String type = "field";
+		public String s = "100";
+		public String uVN = "10";
+		public String uNN = "0.4";
+		public String uK = "10.5";
+		public String pKZ = "100";
+		public String pHH = "600";
+	}
 	
 	/*The tutorial see in http://blog.netgloo.com/2015/02/08/spring-boot-file-upload-with-ajax/*/
 	@RequestMapping(value="/calculate/download", method = RequestMethod.POST)
-	public @ResponseBody String downloadCatalog(@RequestParam("file") MultipartFile file){
+	public @ResponseBody Object downloadCatalog(@RequestParam("file") MultipartFile file){
 		System.out.println("DOWNLOAD");
 		System.out.println(file.getOriginalFilename());
-		return null;
+		
+		Dto result = new Dto();
+		result.table.add(new Transform("TM-100"));
+		result.table.add(new Transform("TM-250"));
+		result.table.add(new Transform("TM-1000"));
+		return result;
 	}
 }
