@@ -36,6 +36,10 @@
 							<span class="glyphicon glyphicon-import"></span> 
 							Download catalog
 						</a>
+						<a href="#" id="clearTransformer">
+							<span class="glyphicon glyphicon-trash"></span>
+							Clear table
+						</a>
 						<!-- Modal window -->
 						
 						<div class="modal fade" id="modal-download-catalog">
@@ -47,7 +51,7 @@
       								</div>
       								<div class="modal-body">
        									<form id="form-download" method="post" action="${pageContext.request.contextPath}/calculate/download" enctype="multipart/form-data">
-       										<input type="file" name="file" id="upload-file-input"/>
+       										<input type="file" name="file" id="downloadTransformer"/>
        										<button name="submit">Upload</button>
        									</form>
       								</div>
@@ -57,7 +61,7 @@
 						
 						<script>
 							
-						 $("#upload-file-input").on("change", function(e){
+						 $("#uploadTransformer").on("change", function(e){
 							 e.preventDefault();
 							 alert("HERE");
 							 $.ajax({
@@ -91,15 +95,19 @@
 										$sampleRow.append($row);
 									 });
 									
-									
+									$("#transformer").show();
+									$placeInsert = $("#transformer tbody");
+									$placeInsert.html("");
 									for (i=0; i<data.table.length; i++){
 										var $newRow = $sampleRow.clone();
 										for (j=0; j<$listData.length; j++){
 											if ($listData[j] in data.table[i]){
-												$newRow.find('[data-name="' +$listData[j] +'"]').attr("data-value",data.table[i][$listData[j]]);
+												$newRow.find('[data-name="' +$listData[j] +'"]')
+												       .attr("data-value",data.table[i][$listData[j]])
+												       .find("input").attr("value", data.table[i][$listData[j]]);
 											}
 										}
-										$newRow.appendTo($("#test"));
+										$newRow.appendTo($placeInsert);
 									}
 									
 									
@@ -224,7 +232,9 @@ $(window).resize(function(){
 			var opt={
 				'Edit':'#defaultEdit',
 				'View':'#defaultView',
-				'ButtomAddRow':'#defaultButtomAddRow',
+				'ButtonAddRow':'#defaultButtonAddRow',
+				'ButtonClearTable':'#defaultButtonClearTable',
+				'ButtonDownload' :'defaultButtonTransformer',
 			};
 			this.each(function(){ 
 				if (options) { 
@@ -238,18 +248,22 @@ $(window).resize(function(){
 					this.view = $(opt.View);
 					this.mode = 'view';
 					this.row = opt.RowForAdd;
-					this.buttomAddRow = $(opt.ButtomAddRow); 
+					this.buttonAddRow = $(opt.ButtonAddRow); 
+					this.buttonClearTable = $(opt.ButtonClearTable);
+					this.buttonDownload = $(opt.ButtonDownload);
+					this.listData = [];
 					
 					this.init = function(){
 						this.table.hide();
-						this.buttomAddRow.hide();
+						this.buttonAddRow.hide();
 						this.createSampleRow();
 					}
 					/*CREATE SAMPLE ROW FOR HEADER ROW OF TABLE*/
 					this.createSampleRow = function(){
 						$th = this.table.find("th");
 						$result = $("<tr />");	
-						
+						var i = 0;
+						var listData = [];
 						$th.each(function(){
 							if ($(this).hasClass("input-field")){
 								$row = $("<td />",{
@@ -258,6 +272,7 @@ $(window).resize(function(){
 									"data-value" : ""
 								});
 								$row.append("<input></input>");
+								listData[i++] = $(this).attr("data-name");
 							}
 							if ($(this).hasClass("action-field")){
 								$row = $("<td/>",{
@@ -268,13 +283,14 @@ $(window).resize(function(){
 							($result).append($row);
 						});
 						this.row = $result;	
+						this.listData = listData;
 					}
 					
 					/*CHANGE MODE OF VIEW TABLE: Edit mode*/
 					this.editMode= function(){
 						if (this.mode == 'edit') return false;
 						this.table.find('.action-field').show();
-						this.buttomAddRow.show();
+						this.buttonAddRow.show();
 						this.edit.addClass('active');
 						this.view.removeClass('active');
 						this.table.toggleClass('view');
@@ -306,7 +322,7 @@ $(window).resize(function(){
 						if (this.mode == 'view') return false;
 						this.table.find('.action-field').hide();
 					
-						this.buttomAddRow.hide();
+						this.buttonAddRow.hide();
 						this.view.addClass('active');
 						this.edit.removeClass('active');
 						this.table.toggleClass('view');
@@ -349,9 +365,15 @@ $(window).resize(function(){
 						$row.remove();
 						if (this.table.find('tr').size() == 1){
 							this.table.hide();
-							this.buttomAddRow.show();
+							this.buttonAddRow.show();
 						}
 						return false;
+					}
+					
+					/*Clear data of table*/
+					this.clearTable = function(){
+						this.table.find("tbody").html("");
+						this.table.hide();
 					}
 				}<!--End class actionTable-->
 				
@@ -370,7 +392,7 @@ $(window).resize(function(){
 					return false
 				});
 				
-				currentTable.buttomAddRow.on('click', function(){
+				currentTable.buttonAddRow.on('click', function(){
 					currentTable.addRow();
 					return false;
 				});
@@ -380,14 +402,52 @@ $(window).resize(function(){
 					return false;
 				});
 				
+				currentTable.buttonClearTable.on("click", function(){
+					currentTable.clearTable();
+				});
+				
 				currentTable.table.on('keydown', 'td:last input', function(event){
 					event = event || window.event;
 					if (event.keyCode == 9) currentTable.addRow();
 					return false;
 				});
 				
+				/*Download transformer from file*/
+				currentTable.buttonDownload.on('change', function(e){
+					 e.preventDefault();
+					 $.ajax({
+						 url: "${pageContext.request.contextPath}/calculate/download",
+						 type: "POST",
+						 data: new FormData(currentTable.buttonDownload.parent('form')[0]),
+						 enctype: 'multipart/form-data',
+						 processData: false,
+						 contentType: false,
+						 cache: false,
+						 success: function(data){
+							$table = currentTable.table;
+							$table.show();
+							currentTable.editMode();
+							$placeInsert = $table.find("tbody");
+							$placeInsert.html("");
+							for (i=0; i<data.table.length; i++){
+								var $newRow = currentTable.row.clone();
+								for (j=0; j<currentTable.listData.length; j++){
+									if (currentTable.listData[j] in data.table[i]){
+										$newRow.find('[data-name="' +currentTable.listData[j] +'"]')
+										       .attr("data-value",data.table[i][currentTable.listData[j]])
+										       .find("input").attr("value", data.table[i][currentTable.listData[j]]);
+									}
+								}
+								$newRow.appendTo($placeInsert);
+							}
+						 },
+						 error: function(){
+							 
+						 }
+					 });
+					 alert(currentTable.table.attr("id"));
+				});
 			});
-			
 		};
 	})(jQuery);
 	
@@ -396,7 +456,9 @@ $(window).resize(function(){
 	$("#transformer").controllerTable({
 		'Edit':'#editTransform',
 		'View':'#viewTransform',
-		'ButtomAddRow':'#addTransformer',
+		'ButtonAddRow':'#addTransformer',
+		'ButtonClearTable' : '#clearTransformer',
+		'ButtonDownload': '#downloadTransformer',
 	});
 	
 	
