@@ -7,9 +7,6 @@ import java.util.List;
 
 import by.topolev.network.data.catalog.sample.Transformer;
 
-
-
-
 public class CSVFile {
 	private Class<?> classEntity;
 	private List<Field> fields = new ArrayList<Field>();

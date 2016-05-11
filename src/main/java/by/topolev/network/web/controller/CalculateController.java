@@ -1,5 +1,8 @@
 package by.topolev.network.web.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -35,9 +38,24 @@ public class CalculateController {
 	
 	/*The tutorial see in http://blog.netgloo.com/2015/02/08/spring-boot-file-upload-with-ajax/*/
 	@RequestMapping(value="/calculate/download", method = RequestMethod.POST)
-	public @ResponseBody Object downloadCatalog(@RequestParam("file") MultipartFile file){
+	public @ResponseBody Object downloadCatalog(@RequestParam("file") MultipartFile file) throws IOException{
 		System.out.println("DOWNLOAD");
 		System.out.println(file.getOriginalFilename());
+		
+		
+		BufferedReader reader = null;
+		
+		reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+		
+		String line;
+		while((line = reader.readLine()) != null){
+			System.out.println(line);
+		}
+		
+
+		
+		
+		
 		
 		Dto result = new Dto();
 		result.table.add(new Transform("TM-100"));
