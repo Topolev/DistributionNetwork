@@ -101,7 +101,7 @@
 						<thead>
 							<tr>
 								<th class="action-field"></th>
-								<th class="inpu-field id" data-name="id">id</th>
+								<th class="input-field id" data-name="id">id</th>
 								<th class="input-field" data-name="type">Type</th>
 								<th class="input-field" data-name="s">s, mm<sup>2</sup></th>
 								<th class="input-field" data-name="u">U,kV</th>
@@ -267,8 +267,46 @@
 			<div id="list-network-tabs"
 				class="displayTableCell  default-list-tabs">
 				<div class="tab" id="tab-nodes">
-				
-				
+					<div class="control-panel">
+						<a href="#view" class="active" id="viewNodes">
+							<span class="glyphicon glyphicon-eye-open"></span>
+						</a> 
+						<a href="#edit" id="editNodes">
+							<span class="glyphicon glyphicon-pencil"></span>
+						</a>
+						<a href="#" id="addNodes">
+							<span class="glyphicon glyphicon-plus"></span> Add node
+						</a> 
+						<a href="#" id="saveNodes">
+							<span class="glyphicon glyphicon-floppy-save"></span> 
+							Save
+						</a> 
+						<a href="#" id="loadNode" data-toggle="modal" data-target="#modalDownloadNodes">
+							<span class="glyphicon glyphicon-import"></span> 
+							Download catalog
+						</a>
+						<a href="#" id="clearNodes">
+							<span class="glyphicon glyphicon-trash"></span>
+							Clear table
+						</a>
+					</div><!-- end .control-panel -->
+					<table class="table table-bordered" id="nodes">
+						<thead>
+							<tr>
+								<th class="action-field"></th>
+								<th class="input-field">N node</th>
+								<th class="input-field">Type of node</th>
+								<th class="input-field">Name of node</th>
+								<th class="input-field">U<sub>nom</sub>, kV</th>
+								<th class="input-field">P<sub>nom</sub>, kV</th>
+								<th class="input-field">Q<sub>nom</sub>, kvar</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					
+					
 				</div><!-- end #nodes -->
 				
 				<div class="tab" id="tab-edges">
@@ -298,10 +336,10 @@
 					<table class="table table-bordered" id="edges">
 						<thead>
 							<tr>
-								<th rowspan=2></th>
-								<th rowspan=2>id</th>
+								<th rowspan=3></th>
+								<th rowspan=3 class="id">id</th>
 								<th colspan=2>Edge</th>
-								<th rowspan=2>Name of edge</th>
+								<th rowspan=3>Name of edge</th>
 								<th>Transformer:</th>
 								<th>type</th>
 								<th>S, kVA</th>
@@ -312,7 +350,7 @@
 							<tr>
 								<th>begin</th>
 								<th>end</th>
-								<th>Overhead,cable line:</th>
+								<th>Overhead,cable:</th>
 								<th>mark</th>
 								<th>s, mm<sup>2</sup></th>
 								<th>L, km</th>
@@ -330,7 +368,17 @@
 
 	<div class="tab" id="results">Результаты расчета</div>
 </div>
-<div id="test">
+<div id="hidden-workspace">
+	<select class="select-transformer" style="color : red">
+		<option>Choose</option>
+	</select>
+	<select class="select-VL" style="color : red">
+		<option>Choose</option>
+	</select>
+	<select class="select-KL" style="color : red">
+		<option>Choose</option>
+	</select>
+	
 </div>
 
 
@@ -345,8 +393,8 @@ $(window).resize(function(){
 <script>
 	
 	
-	
-	
+	/*The global id in current page*/
+	var id=0;
 	/*Create container for switching among tabs*/
 	(function($){
 	$.fn.tabs = function (options) {
@@ -513,7 +561,10 @@ $(window).resize(function(){
 					/*ADD NEW ROW*/				
 					this.addRow = function addRow(){
 						this.table.show();
-						this.row.clone().appendTo(this.table);
+						$row = this.row.clone();
+						id++;
+						$row.find('.id').attr('data-value',id);
+						$row.appendTo(this.table);
 						/*this.table.append(this.row);*/
 						this.table.find('tr:last td:nth-child(2) input').focus();	
 						return false;
@@ -541,7 +592,7 @@ $(window).resize(function(){
 						$options = $('<select/>',{'class': 'select-'+ this.table.attr('id'),
 												  'style' : 'color : red'
 												});
-						$options.append($("<option/>",{text : 'Choose'}));
+						$options.append($("<option/>",{text : 'Custom'}));
 						$option = this.table.find('tbody').find('tr');
 						$option.each(function(){
 							var array = {};
@@ -597,7 +648,7 @@ $(window).resize(function(){
 					return false;
 				});
 				
-				/*Download transformer from file*/
+				/*Download catalog from file*/
 				currentTable.buttonDownload.on('change', function(e){
 					 e.preventDefault();
 					 $(opt.ModalDownload).modal('hide');
@@ -669,23 +720,27 @@ $(window).resize(function(){
 	sampleRowForTableEdges = 
 			'<tr>'+
 				'<td class="action-field"><a href="" class="delete"><span class="glyphicon glyphicon-remove"></span></a></td>'+
+				'<td class="input-field id" data-name="id" data-value=""><input></input></td>'+
 				'<td class="input-field" data-name="begin" data-value=""><input></input></td>'+
 				'<td class="input-field" data-name="end" data-value=""><input></input></td>'+
 				'<td class="input-field" data-name="name" data-value=""><input></input></td>'+
 				'<td class="select-choose" data-name="element" data-value="">'+
 					'<select class="choose-element">'+
 						'<option value="">Choose</option>'+
-						'<option value="transform">Transformer</option>'+
+						'<option value="transformer">Transformer</option>'+
 						'<option value="VL">Overhead line</option>'+
 						'<option value="KL">Cable line</option>'+
 					'</select>'+
 				'</td>'+
 				'<td class="select-choose" data-name="id" data-value=""></td>'+
-				'<td class="input-field" data-name="id" data-value=""><input></input></td>'+
-				'<td class="input-field" data-name="id" data-value=""><input></input></td>'+
-				'<td class="input-field" data-name="id" data-value=""><input></input></td>'+
-				'<td class="input-field" data-name="id" data-value=""><input></input></td>'+
-				'<td class="input-field" data-name="id" data-value=""><input></input></td>'+
+				'<td class="input-field property" data-property-transformer="s" data-property-VL="s" data-property-KL="s" '+
+					'data-value=""><input></input></td>'+
+				'<td class="input-field property" data-property-transformer="uk" data-property-VL="L" data-property-KL="L"'+
+					' data-value=""><input></input></td>'+
+				'<td class="input-field property" data-property-transformer="pHH" data-property-VL="r0" data-property-KL="r0"'+
+					' data-value=""><input></input></td>'+
+				'<td class="input-field property" data-property-transformer="pKZ" data-property-VL="x0" data-property-KL="x0"'+
+					' data-value=""><input></input></td>'+
 			'</tr>';
 			
 	$("#edges").controllerTable({
@@ -698,6 +753,48 @@ $(window).resize(function(){
 		'RowForAdd':sampleRowForTableEdges, 
 	});
 	
+	$("#edges").on("change", function(e){
+		$target = $(e.target);
+		if( $target.is("select.choose-element")){
+			choose = $target.find('option:selected').val();
+			$select = $(".select-"+choose).clone();
+			$placeToInsert = $target.parent().next().html("");
+			$select.appendTo($placeToInsert);
+			$targetPropety = $target.parent().parent().find('.property').find('input').attr("disabled",false).attr("value","");
+		}
+		
+		if ($target.is('.select-transformer') || $target.is('.select-VL') || $target.is('.select-KL')) {
+			var nameElement = $target.attr("class").replace("select-","");	
+			var data = $target.find('option:selected').data('value');
+			if (data != undefined){
+				var $targetProperty = $target.parent().parent().find('.property');
+				for (i=0; i<$targetProperty.size();i++){
+					var $cell = $targetProperty.eq(i);
+					$cell.find("input").attr("disabled",false);
+					var nameProperty = $cell.attr("data-property-"+nameElement);
+					if (nameProperty in data){
+						$cell.attr("data-value", data[nameProperty]).find('input').attr("value", data[nameProperty]).attr("disabled",true);
+					}	
+				}
+			}
+			else{
+				var $targetProperty = $target.parent().parent().find('.property').find("input").attr("disabled",false).attr("value","");
+			}
+			
+		}
+			
+		
+	})
+	
+
+		$("#nodes").controllerTable({
+		'Edit':'#editNodes',
+		'View':'#viewNodes',
+		'ButtonAddRow':'#addNodes',
+		'ButtonClearTable' : '#clearNodes',
+		'ButtonDownload': '#downloadNodes',
+		'ModalDownload':'#modalDownloadNodes',
+	});
 	
 	
 	
