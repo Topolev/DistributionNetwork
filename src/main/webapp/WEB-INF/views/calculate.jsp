@@ -3,7 +3,7 @@
 <ul class="nav nav-tabs" id="main-tabs">
 	<li><a href="#catalog">Catalog of equipments</a></li>
 	<li><a href="#network">Settings if network</a></li>
-	<li><a href="#results">Resulys of calculate</a></li>
+	<li><a href="#results">Results of calculate</a></li>
 </ul>
 
 <!-- Tab panes -->
@@ -13,18 +13,21 @@
 		<div class="displayTableRow">
 			<div id="catalog-tabs" class="displayTableCell default-tabs">
 				<ul>
-					<li class="active"><a href="#transformer">Transformer</a></li>
-					<li><a href="#VL">Overhead lines</a></li>
-					<li><a href="#KL">Cable lines</a></li>
+					<li class="active"><a href="#tab-transformer">Transformer</a></li>
+					<li><a href="#tab-VL">Overhead lines</a></li>
+					<li><a href="#tab-KL">Cable lines</a></li>
 				</ul>
 			</div>
-			<div id="list-catalog-tabs"
-				class="displayTableCell default-list-tabs">
-				<div class="tab active" id="transformer">
+			<div id="list-catalog-tabs" class="displayTableCell default-list-tabs">
+				
+				<div class="tab active" id="tab-transformer">
 					<div class="control-panel">
-						<a href="#view" class="active" id="viewTransform"><span
-							class="glyphicon glyphicon-eye-open"></span></a> <a href="#edit"
-							id="editTransform"><span class="glyphicon glyphicon-pencil"></span></a>
+						<a href="#view" class="active" id="viewTransform">
+							<span class="glyphicon glyphicon-eye-open"></span>
+						</a> 
+						<a href="#edit" id="editTransform">
+							<span class="glyphicon glyphicon-pencil"></span>
+						</a>
 						<a href="#" id="addTransformer">
 							<span class="glyphicon glyphicon-plus"></span> Add transformer
 						</a> 
@@ -32,7 +35,7 @@
 							<span class="glyphicon glyphicon-floppy-save"></span> 
 							Save
 						</a> 
-						<a href="#" id="loadTransformer" data-toggle="modal" data-target="#modal-download-catalog">
+						<a href="#" id="loadTransformer" data-toggle="modal" data-target="#modalDownloadTransformer">
 							<span class="glyphicon glyphicon-import"></span> 
 							Download catalog
 						</a>
@@ -40,94 +43,11 @@
 							<span class="glyphicon glyphicon-trash"></span>
 							Clear table
 						</a>
-						<!-- Modal window -->
 						
-						<div class="modal fade" id="modal-download-catalog">
- 							<div class="modal-dialog">
-    							<div class="modal-content">
-      								<div class="modal-header">
-        								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-       									 <h4 class="modal-title">Download catalog</h4>
-      								</div>
-      								<div class="modal-body">
-       									<form id="form-download" method="post" action="${pageContext.request.contextPath}/calculate/download" enctype="multipart/form-data">
-       										<input type="file" name="file" id="downloadTransformer"/>
-       										<button name="submit">Upload</button>
-       									</form>
-      								</div>
-    							</div><!-- /.modal-content -->
-  							</div><!-- /.modal-dialog -->
-						</div><!-- /.modal -->
-						
-						<script>
-							
-						 $("#uploadTransformer").on("change", function(e){
-							 e.preventDefault();
-							 alert("HERE");
-							 $.ajax({
-								 url: "${pageContext.request.contextPath}/calculate/download",
-								 type: "POST",
-								 data: new FormData($("#form-download")[0]),
-								 enctype: 'multipart/form-data',
-								 processData: false,
-								 contentType: false,
-								 cache: false,
-								 success: function(data){
-									 var $sampleRow = $("<tr />");
-									 var $listData = [];
-									 var i = 0;
-									 $th = $("#transformer th").each(function(){
-									 	if ($(this).hasClass("input-field")){
-											$row = $("<td />",{
-														"class" : $(this).attr("class"),
-														"data-name" : $(this).attr("data-name"),
-														"data-value" : ""
-													});
-											$row.append("<input></input>");
-											$listData[i++] = $(this).attr("data-name");
-										}
-										if ($(this).hasClass("action-field")){
-											$row = $("<td/>",{
-														"class" : $(this).attr("class"),
-													});
-											$row.append('<a href="" class="delete"><span class="glyphicon glyphicon-remove"></span></a>');
-										}
-										$sampleRow.append($row);
-									 });
-									
-									$("#transformer").show();
-									$placeInsert = $("#transformer tbody");
-									$placeInsert.html("");
-									for (i=0; i<data.table.length; i++){
-										var $newRow = $sampleRow.clone();
-										for (j=0; j<$listData.length; j++){
-											if ($listData[j] in data.table[i]){
-												$newRow.find('[data-name="' +$listData[j] +'"]')
-												       .attr("data-value",data.table[i][$listData[j]])
-												       .find("input").attr("value", data.table[i][$listData[j]]);
-											}
-										}
-										$newRow.appendTo($placeInsert);
-									}
-									
-									
-									
-									 
-									
-								 },
-								 error: function(){
-									 
-								 }
-							 });
-							 alert("after ajax");
-							 
-						 });
-							
-							
-						</script>
-					</div>
+					</div><!-- end .control-panel -->
+					
+					
 					<div class="default-text-table alert alert-warning">
-						
 						To display the table , you must add at least one 
 						power transformer using the button 
 						<span class="bold">"Add transformer"</span> 
@@ -138,7 +58,7 @@
 						<thead>
 							<tr>
 								<th class="action-field"></th>
-								<th class="input-field" data-name="id">id</th>
+								<th class="input-field id" data-name="id">id</th>
 								<th class="input-field" data-name="type">Type</th>
 								<th class="input-field" data-name="s">S<sub>NOM</sub>, kVA</th>
 								<th class="input-field" data-name="uVN">U<sub>VN</sub>,kV</th>
@@ -151,26 +71,259 @@
 						<tbody>
 						</tbody>
 					</table>
-				</div>
-				<div class="tab" id="VL">Воздушные линии</div>
-				<div class="tab" id="KL">Кабельные линии</div>
-			</div>
+				</div><!-- end #tab-transformer -->
+				
+				<div class="tab" id="tab-VL">
+					<div class="control-panel">
+						<a href="#view" class="active" id="viewVL">
+							<span class="glyphicon glyphicon-eye-open"></span>
+						</a> 
+						<a href="#edit" id="editVL">
+							<span class="glyphicon glyphicon-pencil"></span>
+						</a>
+						<a href="#" id="addVL">
+							<span class="glyphicon glyphicon-plus"></span> Add overhead line
+						</a> 
+						<a href="#" id="saveVL">
+							<span class="glyphicon glyphicon-floppy-save"></span> 
+							Save
+						</a> 
+						<a href="#" id="loadVL" data-toggle="modal" data-target="#modalDownloadVL">
+							<span class="glyphicon glyphicon-import"></span> 
+							Download catalog
+						</a>
+						<a href="#" id="clearVL">
+							<span class="glyphicon glyphicon-trash"></span>
+							Clear table
+						</a>
+					</div><!-- end .control-panel -->
+					<table class="table table-bordered" id="VL">
+						<thead>
+							<tr>
+								<th class="action-field"></th>
+								<th class="inpu-field id" data-name="id">id</th>
+								<th class="input-field" data-name="type">Type</th>
+								<th class="input-field" data-name="s">s, mm<sup>2</sup></th>
+								<th class="input-field" data-name="u">U,kV</th>
+								<th class="input-field" data-name="r0">r<sub>0</sub> ,Om/km</th>
+								<th class="input-field" data-name="x0">x<sub>0</sub> ,Om/km</th>
+								<th class="input-field" data-name="i">I<sub>max</sub>, A</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div><!-- end #tab-VL -->
+				
+				<div class="tab" id="tab-KL">
+					<div class="control-panel">
+						<a href="#view" class="active" id="viewKL">
+							<span class="glyphicon glyphicon-eye-open"></span>
+						</a> 
+						<a href="#edit" id="editKL">
+							<span class="glyphicon glyphicon-pencil"></span>
+						</a>
+						<a href="#" id="addKL">
+							<span class="glyphicon glyphicon-plus"></span> Add cabel line
+						</a> 
+						<a href="#" id="saveKL">
+							<span class="glyphicon glyphicon-floppy-save"></span> 
+							Save
+						</a> 
+						<a href="#" id="loadKL" data-toggle="modal" data-target="#modalDownloadKL">
+							<span class="glyphicon glyphicon-import"></span> 
+							Download catalog
+						</a>
+						<a href="#" id="clearKL">
+							<span class="glyphicon glyphicon-trash"></span>
+							Clear table
+						</a>
+					</div><!-- end .control-panel -->
+					<table class="table table-bordered" id="KL">
+						<thead>
+							<tr>
+								<th class="action-field"></th>
+								<th class="input-field id" data-name="id">id</th>
+								<th class="input-field" data-name="type">Type</th>
+								<th class="input-field" data-name="s">s, mm<sup>2</sup></th>
+								<th class="input-field" data-name="u">U,kV</th>
+								<th class="input-field" data-name="r0">r<sub>0</sub> ,Om/km</th>
+								<th class="input-field" data-name="x0">x<sub>0</sub> ,Om/km</th>
+								<th class="input-field" data-name="i">I<sub>max</sub>, A</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div><!-- end #tab-KL -->
+			</div><!-- end #list-catalo-tabs -->
 		</div>
-	</div>
-	<!-- end catalog-->
-
+	</div><!-- end catalog-->
+	
+	<!-- Modal window for download Transformer-->
+	<div class="modal fade" id="modalDownloadTransformer">
+ 		<div class="modal-dialog">
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+       				<h4 class="modal-title">Download catalog</h4>
+      			</div>
+      			<div class="modal-body">
+      				<div class="alert alert-warning">
+      					Download text file with the following format:
+      					<div class="example-file">
+      						Transformer;type;s;uVN;uNN;pHH;pKZ;uk</br>
+      						TMG-100;100;10;0.4;100;600;4.5
+      					</div>
+      					The first row unchanged. Each following
+      					rows set the parameters of power transformer.
+      					The sequence of the parameters must comply
+      					with according the sequence in the first row.
+      					There is parameters of one power transformer 
+      					for example.  
+      				</div>
+       				<form  method="post" action="${pageContext.request.contextPath}/calculate/download" enctype="multipart/form-data">
+       					
+       						<input type="file" name="file" id="downloadTransformer"/>
+       					
+       					<button name="submit">Upload</button>
+       				</form>
+      			</div>
+    		</div><!-- /.modal-content -->
+  		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+	<!-- Modal window for download Overhead Lines-->
+	<div class="modal fade" id="modalDownloadVL">
+ 		<div class="modal-dialog">
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+       				<h4 class="modal-title">Download catalog</h4>
+      			</div>
+      			<div class="modal-body">
+      				<div class="alert alert-warning">
+      					Download text file with the following format:
+      					<div class="example-file">
+      						OverheadLine;type;s;u;r0;x0;i</br>
+							AC-25/4.2;25;10;1.15;0.402;135
+      					</div>
+      					The first row unchanged. Each following
+      					rows set the parameters of overhead line wire.
+      					The sequence of the parameters must comply
+      					with according the sequence in the first row.
+      					There is parameters of one wire overhead line 
+      					for example.  
+      				</div>
+       				<form method="post" action="${pageContext.request.contextPath}/calculate/download" enctype="multipart/form-data">
+       					<input type="file" name="file" id="downloadVL"/>
+       					<button name="submit">Upload</button>
+       				</form>
+      			</div>
+    		</div><!-- /.modal-content -->
+  		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+	<!-- Modal window for download Cable Lines-->
+	<div class="modal fade" id="modalDownloadKL">
+ 		<div class="modal-dialog">
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+       				<h4 class="modal-title">Download catalog</h4>
+      			</div>
+      			<div class="modal-body">
+      				<div class="alert alert-warning">
+      					Download text file with the following format:
+      					<div class="example-file">
+      						CableLine;type;s;u;r0;x0;i</br>
+							AC-25/4.2;25;10;1.15;0.402;135
+      					</div>
+      					The first row unchanged. Each following
+      					rows set the parameters of overhead line wire.
+      					The sequence of the parameters must comply
+      					with according the sequence in the first row.
+      					There is parameters of one wire overhead line 
+      					for example.  
+      				</div>
+       				<form method="post" action="${pageContext.request.contextPath}/calculate/download" enctype="multipart/form-data">
+       					<input type="file" name="file" id="downloadKL"/>
+       					<button name="submit">Upload</button>
+       				</form>
+      			</div>
+    		</div><!-- /.modal-content -->
+  		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+						
+						
 	<div class="tab displayTable" id="network">
 		<div class="displayTableRow">
 			<div id="network-tabs" class="displayTableCell default-tabs">
 				<ul>
-					<li class="active"><a href="#nodes">Узлы</a></li>
-					<li><a href="#edges">Ветви</a></li>
+					<li class="active"><a href="#tab-nodes">Nodes</a></li>
+					<li><a href="#tab-edges">Edges</a></li>
 				</ul>
 			</div>
 			<div id="list-network-tabs"
 				class="displayTableCell  default-list-tabs">
-				<div class="tab" id="nodes">Узлы</div>
-				<div class="tab" id="edges">Ветви</div>
+				<div class="tab" id="tab-nodes">
+				
+				
+				</div><!-- end #nodes -->
+				
+				<div class="tab" id="tab-edges">
+					<div class="control-panel">
+						<a href="#view" class="active" id="viewEdges">
+							<span class="glyphicon glyphicon-eye-open"></span>
+						</a> 
+						<a href="#edit" id="editEdges">
+							<span class="glyphicon glyphicon-pencil"></span>
+						</a>
+						<a href="#" id="addEdges">
+							<span class="glyphicon glyphicon-plus"></span> Add edge
+						</a> 
+						<a href="#" id="saveEdges">
+							<span class="glyphicon glyphicon-floppy-save"></span> 
+							Save
+						</a> 
+						<a href="#" id="loadEdge" data-toggle="modal" data-target="#modalDownloadEdges">
+							<span class="glyphicon glyphicon-import"></span> 
+							Download catalog
+						</a>
+						<a href="#" id="clearEdges">
+							<span class="glyphicon glyphicon-trash"></span>
+							Clear table
+						</a>
+					</div><!-- end .control-panel -->
+					<table class="table table-bordered" id="edges">
+						<thead>
+							<tr>
+								<th rowspan=2></th>
+								<th rowspan=2>id</th>
+								<th colspan=2>Edge</th>
+								<th rowspan=2>Name of edge</th>
+								<th>Transformer:</th>
+								<th>type</th>
+								<th>S, kVA</th>
+								<th>u<sub>k</sub>, %</th>
+								<th>P<sub>HH</sub>, kW</th>
+								<th>P<sub>KZ</sub>, kW</th>
+							</tr>
+							<tr>
+								<th>begin</th>
+								<th>end</th>
+								<th>Overhead,cable line:</th>
+								<th>mark</th>
+								<th>s, mm<sup>2</sup></th>
+								<th>L, km</th>
+								<th>r<sub>0</sub>, Om/km</th>
+								<th>x<sub>0</sub>, Om/km</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -235,28 +388,33 @@ $(window).resize(function(){
 				'ButtonAddRow':'#defaultButtonAddRow',
 				'ButtonClearTable':'#defaultButtonClearTable',
 				'ButtonDownload' :'defaultButtonTransformer',
+				'ModalDownload' : 'defaultModalDownload',
 			};
 			this.each(function(){ 
 				if (options) { 
 					$.extend(opt, options);
 				};
 				
-				var $table = $(this).find("table");
+				var $table = $(this);
 				var actionTable = function(){
 					this.table = $table;
 					this.edit = $(opt.Edit);
 					this.view = $(opt.View);
 					this.mode = 'view';
-					this.row = opt.RowForAdd;
+					this.row = $(opt.RowForAdd);
 					this.buttonAddRow = $(opt.ButtonAddRow); 
 					this.buttonClearTable = $(opt.ButtonClearTable);
 					this.buttonDownload = $(opt.ButtonDownload);
+					this.modalDownload = $(opt.ModalDownload);
 					this.listData = [];
 					
 					this.init = function(){
 						this.table.hide();
 						this.buttonAddRow.hide();
-						this.createSampleRow();
+						
+						if (opt.RowForAdd == undefined){
+							this.createSampleRow();
+						}
 					}
 					/*CREATE SAMPLE ROW FOR HEADER ROW OF TABLE*/
 					this.createSampleRow = function(){
@@ -316,7 +474,7 @@ $(window).resize(function(){
 						this.mode = 'edit';
 						return false;
 					};
-					
+ 					
 					/*CHANGE MODE OF EDIT TABLE: View mode*/
 					this.viewMode = function(){
 						if (this.mode == 'view') return false;
@@ -348,6 +506,7 @@ $(window).resize(function(){
 							if (p == false) {$(this).remove()};
 						});
 						this.mode = 'view';
+						this.changeSelect();
 						return false;
 					};
 					
@@ -374,6 +533,32 @@ $(window).resize(function(){
 					this.clearTable = function(){
 						this.table.find("tbody").html("");
 						this.table.hide();
+					}
+					
+					/*ADD NEW LINE IN SELECT FOR CHOOSING*/
+					this.changeSelect = function(){
+						$('select.select-' + this.table.attr('id')).remove();
+						$options = $('<select/>',{'class': 'select-'+ this.table.attr('id'),
+												  'style' : 'color : red'
+												});
+						$options.append($("<option/>",{text : 'Choose'}));
+						$option = this.table.find('tbody').find('tr');
+						$option.each(function(){
+							var array = {};
+							$(this).find('td').each(function(){
+								if ($(this).data('name') != undefined) {
+								array[$(this).data('name')] = $(this).data('value'); }
+							})
+							var json = JSON.stringify(array); 
+						
+							$result = $("<option/>",{
+										text         : array.type,
+										value        : array.id,
+										"data-value" : json,
+									});
+							$result.appendTo($options); 
+						});
+						$options.appendTo('body');
 					}
 				}<!--End class actionTable-->
 				
@@ -415,6 +600,7 @@ $(window).resize(function(){
 				/*Download transformer from file*/
 				currentTable.buttonDownload.on('change', function(e){
 					 e.preventDefault();
+					 $(opt.ModalDownload).modal('hide');
 					 $.ajax({
 						 url: "${pageContext.request.contextPath}/calculate/download",
 						 type: "POST",
@@ -445,7 +631,6 @@ $(window).resize(function(){
 							 
 						 }
 					 });
-					 alert(currentTable.table.attr("id"));
 				});
 			});
 		};
@@ -459,6 +644,58 @@ $(window).resize(function(){
 		'ButtonAddRow':'#addTransformer',
 		'ButtonClearTable' : '#clearTransformer',
 		'ButtonDownload': '#downloadTransformer',
+		'ModalDownload':'#modalDownloadTransformer',
+	});
+	
+	$("#VL").controllerTable({
+		'Edit':'#editVL',
+		'View':'#viewVL',
+		'ButtonAddRow':'#addVL',
+		'ButtonClearTable' : '#clearVL',
+		'ButtonDownload': '#downloadVL',
+		'ModalDownload':'#modalDownloadVL',
+	});
+	
+	$("#KL").controllerTable({
+		'Edit':'#editKL',
+		'View':'#viewKL',
+		'ButtonAddRow':'#addKL',
+		'ButtonClearTable' : '#clearKL',
+		'ButtonDownload': '#downloadKL',
+		'ModalDownload':'#modalDownloadKL',
+	});
+	
+	
+	sampleRowForTableEdges = 
+			'<tr>'+
+				'<td class="action-field"><a href="" class="delete"><span class="glyphicon glyphicon-remove"></span></a></td>'+
+				'<td class="input-field" data-name="begin" data-value=""><input></input></td>'+
+				'<td class="input-field" data-name="end" data-value=""><input></input></td>'+
+				'<td class="input-field" data-name="name" data-value=""><input></input></td>'+
+				'<td class="select-choose" data-name="element" data-value="">'+
+					'<select class="choose-element">'+
+						'<option value="">Choose</option>'+
+						'<option value="transform">Transformer</option>'+
+						'<option value="VL">Overhead line</option>'+
+						'<option value="KL">Cable line</option>'+
+					'</select>'+
+				'</td>'+
+				'<td class="select-choose" data-name="id" data-value=""></td>'+
+				'<td class="input-field" data-name="id" data-value=""><input></input></td>'+
+				'<td class="input-field" data-name="id" data-value=""><input></input></td>'+
+				'<td class="input-field" data-name="id" data-value=""><input></input></td>'+
+				'<td class="input-field" data-name="id" data-value=""><input></input></td>'+
+				'<td class="input-field" data-name="id" data-value=""><input></input></td>'+
+			'</tr>';
+			
+	$("#edges").controllerTable({
+		'Edit':'#editEdges',
+		'View':'#viewEdges',
+		'ButtonAddRow':'#addEdges',
+		'ButtonClearTable' : '#clearEdges',
+		'ButtonDownload': '#downloadEdges',
+		'ModalDownload':'#modalDownloadEdges',
+		'RowForAdd':sampleRowForTableEdges, 
 	});
 	
 	

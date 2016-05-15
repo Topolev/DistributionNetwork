@@ -11,8 +11,10 @@ public class CSVFile {
 	private Class<?> classEntity;
 	private List<Field> fields = new ArrayList<Field>();
 	private List<String> rows = new ArrayList<String>();
-	public static final String  DEFAULT_PACKAGE_OF_ENTITY = "by.topolev.network.catalog.sample";
+	public static final String  DEFAULT_PACKAGE_OF_ENTITY = "by.topolev.network.data.catalog.sample";
 	
+	/*  Format header: 
+	 * 	<ClassNameEntityCatalog> ; <Fields list of entity>*/
 	public void setHeaderFile(String strHeader) throws TemplateNameClassNotFound, FieldInTemplateClassNotFound{
 		String[] elements = strHeader.split(";");
 		for (int i=0; i<elements.length; i++){
