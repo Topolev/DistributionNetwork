@@ -431,10 +431,12 @@ $(window).resize(function(){
 	(function($){
 		$.fn.controllerTable = function (options) {
 			var opt={
+				'NameClassTable':'defaultClassTable',
 				'Edit':'#defaultEdit',
 				'View':'#defaultView',
 				'ButtonAddRow':'#defaultButtonAddRow',
 				'ButtonClearTable':'#defaultButtonClearTable',
+				'ButtonSave' : '#defaultButtonSave',
 				'ButtonDownload' :'defaultButtonTransformer',
 				'ModalDownload' : 'defaultModalDownload',
 			};
@@ -446,6 +448,7 @@ $(window).resize(function(){
 				var $table = $(this);
 				var actionTable = function(){
 					this.table = $table;
+					this.nameClassTable = opt.NameClassTable;
 					this.edit = $(opt.Edit);
 					this.view = $(opt.View);
 					this.mode = 'view';
@@ -453,6 +456,7 @@ $(window).resize(function(){
 					this.buttonAddRow = $(opt.ButtonAddRow); 
 					this.buttonClearTable = $(opt.ButtonClearTable);
 					this.buttonDownload = $(opt.ButtonDownload);
+					this.buttonSave = $(opt.ButtonSave);
 					this.modalDownload = $(opt.ModalDownload);
 					this.listData = [];
 					
@@ -464,6 +468,7 @@ $(window).resize(function(){
 							this.createSampleRow();
 						}
 					}
+					
 					/*CREATE SAMPLE ROW FOR HEADER ROW OF TABLE*/
 					this.createSampleRow = function(){
 						$th = this.table.find("th");
@@ -644,8 +649,21 @@ $(window).resize(function(){
 				
 				currentTable.table.on('keydown', 'td:last input', function(event){
 					event = event || window.event;
-					if (event.keyCode == 9) currentTable.addRow();
-					return false;
+					if (event.keyCode == 9) {
+						currentTable.addRow();
+						return false;
+					}
+					
+				});
+				
+				currentTable.table.on('change', function(event){
+					var $target = $(event.target);
+					if ($target.is('input')) {
+						value = $.trim($target[0].value);
+						/*alert(value);*/
+						$target.parent().attr('data-value',value);
+						/*currentTable.changeSelect();*/
+					}
 				});
 				
 				/*Download catalog from file*/
@@ -683,6 +701,43 @@ $(window).resize(function(){
 						 }
 					 });
 				});
+				
+				/*SAVE CATALOG*/
+				currentTable.buttonSave.on('click', function(){
+					alert("save");
+					alert(currentTable.nameClassTable);
+					var data = '{"nameClass":"'+currentTable.nameClassTable + '","table":[';
+					currentTable.table.find('tbody tr').each(function(i){
+						var row = {};
+						$(this).find("td").each(function(){
+							var $cell = $(this);
+							if ($cell.attr('data-name') !=  undefined){
+								row[$cell.attr('data-name')] = $cell.attr('data-value');
+							};
+						});
+						if (i==0) data = data + JSON.stringify(row);
+						else data = data + ',' + JSON.stringify(row);	
+					})
+					data = data + "]}";
+					alert(data.nameClass);
+					$.ajax({
+						 url: "${pageContext.request.contextPath}/calculate/save",
+						 type: "POST",
+						 data: data,
+						 contentType: "application/json; charset=utf-8",
+						 dataType : 'json',
+						 success: function(data){
+							alert(data);
+						 },
+						 error: function(){
+							 
+						 }
+					 });
+					
+					
+					
+				});
+				
 			});
 		};
 	})(jQuery);
@@ -690,15 +745,18 @@ $(window).resize(function(){
 
 			
 	$("#transformer").controllerTable({
+		'NameClassTable':'Transformer',
 		'Edit':'#editTransform',
 		'View':'#viewTransform',
 		'ButtonAddRow':'#addTransformer',
 		'ButtonClearTable' : '#clearTransformer',
 		'ButtonDownload': '#downloadTransformer',
+		'ButtonSave' : '#saveTransformer',
 		'ModalDownload':'#modalDownloadTransformer',
 	});
 	
 	$("#VL").controllerTable({
+		'NameClassTable':'OverheadLine',
 		'Edit':'#editVL',
 		'View':'#viewVL',
 		'ButtonAddRow':'#addVL',
@@ -708,6 +766,7 @@ $(window).resize(function(){
 	});
 	
 	$("#KL").controllerTable({
+		'NameClassTable':'CableLine',
 		'Edit':'#editKL',
 		'View':'#viewKL',
 		'ButtonAddRow':'#addKL',

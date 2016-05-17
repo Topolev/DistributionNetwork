@@ -8,8 +8,4 @@ public class Transformer implements CatalogDTO {
 	public float pHH;
 	public float pKZ;
 	public float uk;
-	
-	public String toString(){
-		return "sNom=" + s + "kVA; type=" + type;
-	}
 }
