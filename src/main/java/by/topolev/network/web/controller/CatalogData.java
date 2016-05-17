@@ -8,19 +8,20 @@ import by.topolev.network.data.catalog.sample.Transformer;
 public class CatalogData {
 
 	private String nameClass;
-	private String table;
+	private Object[] table;
 	public String getNameClass() {
 		return nameClass;
 	}
 	public void setNameClass(String nameClass) {
 		this.nameClass = nameClass;
 	}
-	public String getTable() {
+	public Object[] getTable() {
 		return table;
 	}
-	public void setTable(String table) {
+	public void setTable(Object[] table) {
 		this.table = table;
 	}
+
 
 	
 }

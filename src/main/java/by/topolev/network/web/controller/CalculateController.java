@@ -50,8 +50,7 @@ public class CalculateController {
 	
 	@RequestMapping(value="/calculate/save", method = RequestMethod.POST)
 	public @ResponseBody String saveCatalogInCSV(@RequestBody CatalogData data){
-		System.out.println(data);
-		System.out.println(data.getClass().getName());
+		catalogService.saveCatalog(data);
 		return "from server";
 	}
 }

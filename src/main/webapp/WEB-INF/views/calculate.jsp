@@ -686,6 +686,7 @@ $(window).resize(function(){
 							$placeInsert.html("");
 							for (i=0; i<data.table.length; i++){
 								var $newRow = currentTable.row.clone();
+								$newRow.find('.id').attr('data-value',id++);
 								for (j=0; j<currentTable.listData.length; j++){
 									if (currentTable.listData[j] in data.table[i]){
 										$newRow.find('[data-name="' +currentTable.listData[j] +'"]')
