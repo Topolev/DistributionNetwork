@@ -1,9 +1,13 @@
 package by.topolev.network.web.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import by.topolev.network.data.catalog.sample.CatalogDTO;
-import by.topolev.network.data.catalog.sample.Transformer;
 import by.topolev.network.service.CatalogService;
 
 
@@ -49,8 +52,15 @@ public class CalculateController {
 	
 	
 	@RequestMapping(value="/calculate/save", method = RequestMethod.POST)
-	public @ResponseBody String saveCatalogInCSV(@RequestBody CatalogData data){
-		catalogService.saveCatalog(data);
-		return "from server";
+	public HttpEntity<byte[]> saveCatalogInCSV(@RequestBody CatalogData data){
+		System.out.println(catalogService.saveCatalogInCSV(data));
+		byte[] documentBody = catalogService.saveCatalogInCSV(data).getBytes();
+		HttpHeaders header = new HttpHeaders();
+	    header.setContentType(new MediaType("application", "pdf"));
+	    header.set("Content-Disposition",
+	                   "attachment; filename=Catalog.csv");
+	    header.setContentLength(documentBody.length);
+
+	    return new HttpEntity<byte[]>(documentBody, header);
 	}
 }

@@ -8,5 +8,5 @@ import by.topolev.network.web.controller.CatalogData;
 
 public interface CatalogService {
 	public Collection<? extends CatalogDTO>  loadCatalog(InputStream inputStream);
-	public void saveCatalog(CatalogData data);
+	public String saveCatalogInCSV(CatalogData data);
 }

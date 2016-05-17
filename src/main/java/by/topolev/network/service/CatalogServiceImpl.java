@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -17,6 +18,7 @@ import by.topolev.network.data.catalog.sample.Transformer;
 import by.topolev.network.data.csv.CSVFile;
 import by.topolev.network.data.csv.CSVFileReader;
 import by.topolev.network.data.csv.CSVFileReaderCreator;
+import by.topolev.network.data.csv.CSVFileWriter;
 import by.topolev.network.data.csv.FieldInTemplateClassNotFound;
 import by.topolev.network.data.csv.TemplateNameClassNotFound;
 import by.topolev.network.web.controller.CatalogData;
@@ -52,41 +54,46 @@ public class CatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	public void saveCatalog(CatalogData data) {
-		Class sampleEntity = null;
+	public String saveCatalogInCSV(CatalogData data) {
+		Class<?> sampleEntity = null;
 		CreatorCollectionEntity<? extends CatalogDTO> creator = null;
+		
+		
 		
 		try {
 			sampleEntity = Class.forName(DEFAULT_PACKAGE_OF_ENTITY + '.' + data.getNameClass());
 			if (sampleEntity == Transformer.class)
-				creator = new CreatorCollectionEntity<Transformer>(Transformer.class,data);
+				creator = new CreatorCollectionEntity<Transformer>(Transformer.class, data);
 			if (sampleEntity == OverheadLine.class)
-				creator = new CreatorCollectionEntity<OverheadLine>(OverheadLine.class,data);
+				creator = new CreatorCollectionEntity<OverheadLine>(OverheadLine.class, data);
 			if (sampleEntity == CableLine.class)
-				creator = new CreatorCollectionEntity<CableLine>(CableLine.class,data);
-			
-			System.out.println("in try");
-			for (Object element : creator.getCollection()){
-				System.out.println(element);
-			}
-			
+				creator = new CreatorCollectionEntity<CableLine>(CableLine.class, data);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		return creator.getCSVFile();
+
 	}
-	
-	class CreatorCollectionEntity<T>{
-		private Collection<T> collection;
-		public CreatorCollectionEntity(Class<T> clazz, CatalogData data){
-			for (Object row : data.getTable()) {
-				Map<String, String> map = (Map<String, String>) row;
-				ObjectMapper mapper = new ObjectMapper();
-				collection.add((T) mapper.convertValue(map, clazz));
-			}
-		}
-		public Collection<T> getCollection(){
-			return collection;
+
+}
+
+class CreatorCollectionEntity<T> {
+	private List<T> collection = new ArrayList<T>();
+	private CSVFileWriter<T> csvWriter = new CSVFileWriter<T>();
+
+	public CreatorCollectionEntity(Class<T> clazz, CatalogData data) {
+		for (Object row : data.getTable()) {
+			Map<String, String> map = (Map<String, String>) row;
+			ObjectMapper mapper = new ObjectMapper();
+			collection.add((T) mapper.convertValue(map, clazz));
 		}
 	}
 
+	public List<T> getCollection() {
+		return collection;
+	}
+	
+	public String getCSVFile(){
+		return csvWriter.prepareCSVData(collection, ";");
+	}
 }

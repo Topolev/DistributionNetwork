@@ -705,6 +705,11 @@ $(window).resize(function(){
 				
 				/*SAVE CATALOG*/
 				currentTable.buttonSave.on('click', function(){
+					var text = 'TEST STRJKH JHDKAH';
+					
+					var bb = new BlobBuilder(); bb.append("Lorem ipsum"); var fileSaver = window.saveAs(bb.getBlob(), "test_file"); fileSaver.onwriteend = myOnWriteEnd;
+					
+					
 					alert("save");
 					alert(currentTable.nameClassTable);
 					var data = '{"nameClass":"'+currentTable.nameClassTable + '","table":[';
@@ -731,7 +736,7 @@ $(window).resize(function(){
 							alert(data);
 						 },
 						 error: function(){
-							 
+							 alert("error");
 						 }
 					 });
 					

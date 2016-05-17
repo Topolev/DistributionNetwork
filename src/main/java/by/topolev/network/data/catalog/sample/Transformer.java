@@ -1,7 +1,7 @@
 package by.topolev.network.data.catalog.sample;
 
 public class Transformer implements CatalogDTO {
-	public Long id;
+	private Long id;
 	public String type;
 	public float s;
 	public float uVN;
