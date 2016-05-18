@@ -705,9 +705,7 @@ $(window).resize(function(){
 				
 				/*SAVE CATALOG*/
 				currentTable.buttonSave.on('click', function(){
-					var text = 'TEST STRJKH JHDKAH';
 					
-					var bb = new BlobBuilder(); bb.append("Lorem ipsum"); var fileSaver = window.saveAs(bb.getBlob(), "test_file"); fileSaver.onwriteend = myOnWriteEnd;
 					
 					
 					alert("save");

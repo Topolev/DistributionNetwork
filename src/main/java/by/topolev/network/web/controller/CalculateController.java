@@ -1,13 +1,12 @@
 package by.topolev.network.web.controller;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,15 +51,27 @@ public class CalculateController {
 	
 	
 	@RequestMapping(value="/calculate/save", method = RequestMethod.POST)
-	public HttpEntity<byte[]> saveCatalogInCSV(@RequestBody CatalogData data){
-		System.out.println(catalogService.saveCatalogInCSV(data));
-		byte[] documentBody = catalogService.saveCatalogInCSV(data).getBytes();
-		HttpHeaders header = new HttpHeaders();
-	    header.setContentType(new MediaType("application", "pdf"));
-	    header.set("Content-Disposition",
-	                   "attachment; filename=Catalog.csv");
-	    header.setContentLength(documentBody.length);
-
-	    return new HttpEntity<byte[]>(documentBody, header);
+	@ResponseBody
+	public String prepareCSVFile(@RequestBody CatalogData data){
+		System.out.println("HERE");
+		File file = new File("catalog.csv");
+		try {
+			if (!file.exists()){
+				file.createNewFile();
+			}
+			System.out.println("01");
+			PrintWriter out = new PrintWriter(file.getAbsoluteFile());
+			try{
+				out.println(catalogService.saveCatalogInCSV(data));
+				System.out.println("02");
+			} finally {
+				out.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("03");
+		System.out.println(file.getAbsolutePath());
+		return file.getAbsolutePath();
 	}
 }
