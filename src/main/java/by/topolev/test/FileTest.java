@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import by.topolev.network.config.ConfigClass;
+
 public class FileTest {
 	public static void main(String[] args) {
-		File file = new File("help/test1.txt");
+		File file = new File(ConfigClass.DEFAULT_PATH_CSV_FILE+"test1.txt");
 
 		try {
 			if (!file.exists()) {

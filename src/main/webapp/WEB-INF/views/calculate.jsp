@@ -704,12 +704,8 @@ $(window).resize(function(){
 				});
 				
 				/*SAVE CATALOG*/
-				currentTable.buttonSave.on('click', function(){
-					
-					
-					
-					alert("save");
-					alert(currentTable.nameClassTable);
+				currentTable.buttonSave.on('click', function(e){
+					e.preventDefault();
 					var data = '{"nameClass":"'+currentTable.nameClassTable + '","table":[';
 					currentTable.table.find('tbody tr').each(function(i){
 						var row = {};
@@ -723,15 +719,14 @@ $(window).resize(function(){
 						else data = data + ',' + JSON.stringify(row);	
 					})
 					data = data + "]}";
-					alert(data.nameClass);
 					$.ajax({
 						 url: "${pageContext.request.contextPath}/calculate/save",
 						 type: "POST",
 						 data: data,
 						 contentType: "application/json; charset=utf-8",
-						 dataType : 'json',
 						 success: function(data){
-							alert(data);
+							window.location.href = '${pageContext.request.contextPath}/calculate/save/' + data;
+							/*window.open('${pageContext.request.contextPath}/calculate/save/' + data);*/
 						 },
 						 error: function(){
 							 alert("error");
