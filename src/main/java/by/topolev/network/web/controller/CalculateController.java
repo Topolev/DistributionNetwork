@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import by.topolev.network.config.ConfigClass;
 import by.topolev.network.data.catalog.sample.CatalogDTO;
+import by.topolev.network.data.csv.InvalidCSVException;
 import by.topolev.network.service.CatalogService;
 
 @Controller
@@ -44,40 +45,51 @@ public class CalculateController {
 	 * http://blog.netgloo.com/2015/02/08/spring-boot-file-upload-with-ajax/
 	 */
 	@RequestMapping(value = "/calculate/download", method = RequestMethod.POST)
-	public @ResponseBody Object downloadCatalog(@RequestParam("file") MultipartFile file) throws IOException {
-
+	public @ResponseBody Object downloadCatalog(@RequestParam("nameClassTable") String nameClassEntity,
+			@RequestParam("file") MultipartFile file) throws IOException {
 		WrapJSON result = new WrapJSON();
 		if (file.isEmpty()) {
 			result.textError = "You failed to upload file";
 			return result;
 		}
-		result.table = catalogService.loadCatalog(file.getInputStream());
+		try {
+			result.table = catalogService.loadCatalog(file.getInputStream(), nameClassEntity);
+		} catch (InvalidCSVException e) {
+			result.textError = "CSV file is invalid";
+		}
 		return result;
 	}
 
 	@RequestMapping(value = "/calculate/save", method = RequestMethod.POST)
 	@ResponseBody
 	public String prepareCSVFile(@RequestBody CatalogData data) {
-		File file = catalogService.getFileCatalogInCSV(data);
-		return file.getName();
+		String nameFile = null;
+		try {
+			nameFile = catalogService.saveCatalogInCSV(data);
+		} catch (InvalidCSVException e) {
+			e.printStackTrace();
+		}
+		System.out.println(nameFile);
+		return nameFile;
 	}
 
 	@RequestMapping(value = "/calculate/save/{file}", method = RequestMethod.GET)
 	public void downloadCSVFile(@PathVariable("file") String pathFile, HttpServletResponse response) {
 		File file = new File(ConfigClass.DEFAULT_PATH_CSV_FILE + pathFile + ".csv");
-		if (file.exists()) System.out.println("FILE EXXISTS");
+		if (file.exists())
+			System.out.println("FILE EXXISTS");
 		System.out.println(ConfigClass.DEFAULT_PATH_CSV_FILE + pathFile);
 		try {
 			InputStream is = new FileInputStream(file);
 			response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-			try{
+			try {
 				FileCopyUtils.copy(is, response.getOutputStream());
-			} finally{
+			} finally {
 				response.flushBuffer();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
 
 	}
 

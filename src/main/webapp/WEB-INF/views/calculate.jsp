@@ -172,7 +172,8 @@
       				<div class="alert alert-warning">
       					Download text file with the following format:
       					<div class="example-file">
-      						Transformer;type;s;uVN;uNN;pHH;pKZ;uk</br>
+      						Transformer
+      						type;s;uVN;uNN;pHH;pKZ;uk</br>
       						TMG-100;100;10;0.4;100;600;4.5
       					</div>
       					The first row unchanged. Each following
@@ -183,9 +184,8 @@
       					for example.  
       				</div>
        				<form  method="post" action="${pageContext.request.contextPath}/calculate/download" enctype="multipart/form-data">
-       					
+       						<input type="hidden" name="nameClassTable" value="Transformer"/>
        						<input type="file" name="file" id="downloadTransformer"/>
-       					
        					<button name="submit">Upload</button>
        				</form>
       			</div>
@@ -216,6 +216,7 @@
       					for example.  
       				</div>
        				<form method="post" action="${pageContext.request.contextPath}/calculate/download" enctype="multipart/form-data">
+       					<input type="hidden" name="nameClassTable" value="OverheadLine"/>
        					<input type="file" name="file" id="downloadVL"/>
        					<button name="submit">Upload</button>
        				</form>
@@ -247,6 +248,7 @@
       					for example.  
       				</div>
        				<form method="post" action="${pageContext.request.contextPath}/calculate/download" enctype="multipart/form-data">
+       					<input type="hidden" name="nameClassTable" value="CableLine"/>
        					<input type="file" name="file" id="downloadKL"/>
        					<button name="submit">Upload</button>
        				</form>
@@ -679,26 +681,30 @@ $(window).resize(function(){
 						 contentType: false,
 						 cache: false,
 						 success: function(data){
-							$table = currentTable.table;
-							$table.show();
-							currentTable.editMode();
-							$placeInsert = $table.find("tbody");
-							$placeInsert.html("");
-							for (i=0; i<data.table.length; i++){
-								var $newRow = currentTable.row.clone();
-								$newRow.find('.id').attr('data-value',id++);
-								for (j=0; j<currentTable.listData.length; j++){
-									if (currentTable.listData[j] in data.table[i]){
-										$newRow.find('[data-name="' +currentTable.listData[j] +'"]')
-										       .attr("data-value",data.table[i][currentTable.listData[j]])
-										       .find("input").attr("value", data.table[i][currentTable.listData[j]]);
+							if (data.textError == null){
+								$table = currentTable.table;
+								$table.show();
+								currentTable.editMode();
+								$placeInsert = $table.find("tbody");
+								$placeInsert.html("");
+								for (i=0; i<data.table.length; i++){
+									var $newRow = currentTable.row.clone();
+									$newRow.find('.id').attr('data-value',id++);
+									for (j=0; j<currentTable.listData.length; j++){
+										if (currentTable.listData[j] in data.table[i]){
+											$newRow.find('[data-name="' +currentTable.listData[j] +'"]')
+											       .attr("data-value",data.table[i][currentTable.listData[j]])
+											       .find("input").attr("value", data.table[i][currentTable.listData[j]]);
+										}
 									}
+									$newRow.appendTo($placeInsert);
 								}
-								$newRow.appendTo($placeInsert);
+							} else{
+								 alert("CSVFile Invalid");
 							}
 						 },
 						 error: function(){
-							 
+							 alert("error");
 						 }
 					 });
 				});
@@ -706,6 +712,7 @@ $(window).resize(function(){
 				/*SAVE CATALOG*/
 				currentTable.buttonSave.on('click', function(e){
 					e.preventDefault();
+					alert("save")
 					var data = '{"nameClass":"'+currentTable.nameClassTable + '","table":[';
 					currentTable.table.find('tbody tr').each(function(i){
 						var row = {};
@@ -719,6 +726,7 @@ $(window).resize(function(){
 						else data = data + ',' + JSON.stringify(row);	
 					})
 					data = data + "]}";
+					alert(data);
 					$.ajax({
 						 url: "${pageContext.request.contextPath}/calculate/save",
 						 type: "POST",
@@ -761,6 +769,7 @@ $(window).resize(function(){
 		'ButtonAddRow':'#addVL',
 		'ButtonClearTable' : '#clearVL',
 		'ButtonDownload': '#downloadVL',
+		'ButtonSave' : '#saveVL',
 		'ModalDownload':'#modalDownloadVL',
 	});
 	
