@@ -172,7 +172,7 @@
       				<div class="alert alert-warning">
       					Download text file with the following format:
       					<div class="example-file">
-      						Transformer
+      						Transformer</br>
       						type;s;uVN;uNN;pHH;pKZ;uk</br>
       						TMG-100;100;10;0.4;100;600;4.5
       					</div>
@@ -205,7 +205,8 @@
       				<div class="alert alert-warning">
       					Download text file with the following format:
       					<div class="example-file">
-      						OverheadLine;type;s;u;r0;x0;i</br>
+      						OverheadLine</br>
+      						type;s;u;r0;x0;i</br>
 							AC-25/4.2;25;10;1.15;0.402;135
       					</div>
       					The first row unchanged. Each following
@@ -237,7 +238,8 @@
       				<div class="alert alert-warning">
       					Download text file with the following format:
       					<div class="example-file">
-      						CableLine;type;s;u;r0;x0;i</br>
+      						CableLine</br>
+      						type;s;u;r0;x0;i</br>
 							AC-25/4.2;25;10;1.15;0.402;135
       					</div>
       					The first row unchanged. Each following
@@ -338,7 +340,7 @@
 					<table class="table table-bordered" id="edges">
 						<thead>
 							<tr>
-								<th rowspan=3></th>
+								<th rowspan=3 class="action-field"></th>
 								<th rowspan=3 class="id">id</th>
 								<th colspan=2>Edge</th>
 								<th rowspan=3>Name of edge</th>
@@ -780,6 +782,7 @@ $(window).resize(function(){
 		'ButtonAddRow':'#addKL',
 		'ButtonClearTable' : '#clearKL',
 		'ButtonDownload': '#downloadKL',
+		'ButtonSave' : '#saveKL',
 		'ModalDownload':'#modalDownloadKL',
 	});
 	
@@ -853,7 +856,20 @@ $(window).resize(function(){
 		
 	})
 	
-
+	sampleRowForTableNodes = 
+		'<tr>'+
+			'<td class="action-field"><a href="" class="delete"><span class="glyphicon glyphicon-remove"></span></a></td>'+
+			'<td class="input-field" data-name="n" data-value=""><input></input></td>'+
+			'<td class="select-choose">'+
+				'<select name="typeNode">'+
+					'<option>Load</option>'+
+					'<option>Bus</option>'+
+				'</select>'+
+			'</td>'+
+			'<td class="input-field" data-name="u" data-value=""><input></input></td>'+
+			'<td class="input-field" data-name="p" data-value=""><input></input></td>'+
+			'<td class="input-field" data-name="q" data-value=""><input></input></td>'+
+		'</tr>';
 		$("#nodes").controllerTable({
 		'Edit':'#editNodes',
 		'View':'#viewNodes',
@@ -861,6 +877,7 @@ $(window).resize(function(){
 		'ButtonClearTable' : '#clearNodes',
 		'ButtonDownload': '#downloadNodes',
 		'ModalDownload':'#modalDownloadNodes',
+		'RowForAdd':sampleRowForTableNodes, 
 	});
 	
 	

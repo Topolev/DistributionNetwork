@@ -26,7 +26,7 @@ public class CSVFileIO<DTO> {
 		return collection;
 	}
 	
-	public List<DTO> readCSVFileFromJSON(CSVFile file) throws InvalidCSVException{
+	public List<DTO> readCSVFileFromJSON(CSVFile file) {
 		List<DTO> collection = new ArrayList<DTO>();
 		Object[] entityRows = file.getEntityRowsInJSON();
 		for (Object row : entityRows) {
@@ -37,21 +37,24 @@ public class CSVFileIO<DTO> {
 		return collection;
 	}
 	
-	public String writeCSVFileJSON(CSVFile file) throws InvalidCSVException{
+	public String writeCSVFileJSON(CSVFile file) throws InvalidCSVException {
 		StringBuilder sb = new StringBuilder();
-		try{
+	
 			sb.append(file.getClassEntity().getSimpleName()+'\n');
 			sb.append(file.getRowFields(ConfigClass.DEFAULT_DELIMITER_CSV)+ '\n');
 			for (DTO entity : readCSVFileFromJSON(file)){
 				for (Field field : file.getFieldsClassEntity()){
-					sb.append(field.get(entity) + ConfigClass.DEFAULT_DELIMITER_CSV);
+					try {
+						sb.append(field.get(entity) + ConfigClass.DEFAULT_DELIMITER_CSV);
+					} catch (IllegalArgumentException | IllegalAccessException e) {
+						e.printStackTrace();
+						throw new InvalidCSVException();
+					}
 				}
 				sb.deleteCharAt(sb.length()-1).append('\n');
 			}
 			
-		} catch (Exception e){
-			throw new InvalidCSVException();
-		}
+
 		return sb.toString();
 	}
 	
