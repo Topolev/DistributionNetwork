@@ -373,13 +373,13 @@
 	<div class="tab" id="results">Результаты расчета</div>
 </div>
 <div id="hidden-workspace">
-	<select class="select-transformer" style="color : red">
+	<select id="select-transformer" style="color : red">
 		<option>Choose</option>
 	</select>
-	<select class="select-VL" style="color : red">
+	<select id="select-VL" style="color : red">
 		<option>Choose</option>
 	</select>
-	<select class="select-KL" style="color : red">
+	<select id="select-KL" style="color : red">
 		<option>Choose</option>
 	</select>
 	
@@ -397,8 +397,7 @@ $(window).resize(function(){
 <script>
 	
 	
-	/*The global id in current page*/
-	var id=0;
+
 	/*Create container for switching among tabs*/
 	(function($){
 	$.fn.tabs = function (options) {
@@ -431,6 +430,10 @@ $(window).resize(function(){
 	$("#catalog-tabs").tabs({'tabsContent':'#list-catalog-tabs'});
 	$("#network-tabs").tabs({'tabsContent':'#list-network-tabs'});
 	
+	/*The global id in current page for elements of catalog*/
+	var id=0;
+	/*The global massiv */
+	var elementCatalog = [];
 	
 	(function($){
 		$.fn.controllerTable = function (options) {
@@ -571,7 +574,7 @@ $(window).resize(function(){
 					this.addRow = function addRow(){
 						this.table.show();
 						$row = this.row.clone();
-						id++;
+						id++; 
 						$row.find('.id').attr('data-value',id);
 						$row.appendTo(this.table);
 						/*this.table.append(this.row);*/
@@ -597,8 +600,11 @@ $(window).resize(function(){
 					
 					/*ADD NEW LINE IN SELECT FOR CHOOSING*/
 					this.changeSelect = function(){
-						$('select.select-' + this.table.attr('id')).remove();
-						$options = $('<select/>',{'class': 'select-'+ this.table.attr('id'),
+						alert("changeSelect")
+						var nameElement = this.table.attr('id');
+						$('select#select-' + this.table.attr('id')).remove();
+						alert("delete AllSelect");
+						$options = $('<select/>',{'id': 'select-'+ this.table.attr('id'),
 												  'style' : 'color : red'
 												});
 						$options.append($("<option/>",{text : 'Custom'}));
@@ -606,11 +612,18 @@ $(window).resize(function(){
 						$option.each(function(){
 							var array = {};
 							$(this).find('td').each(function(){
-								if ($(this).data('name') != undefined) {
-								array[$(this).data('name')] = $(this).data('value'); }
+								if ($(this).attr('data-name') != undefined) {
+									array[$(this).attr('data-name')] = $(this).attr('data-value'); }
 							})
 							var json = JSON.stringify(array); 
 						
+							
+							
+							array['element'] =  nameElement;
+							elementCatalog.push(JSON.stringify(array));
+							console.log(elementCatalog);
+							
+							
 							$result = $("<option/>",{
 										text         : array.type,
 										value        : array.id,
@@ -691,7 +704,9 @@ $(window).resize(function(){
 								$placeInsert.html("");
 								for (i=0; i<data.table.length; i++){
 									var $newRow = currentTable.row.clone();
-									$newRow.find('.id').attr('data-value',id++);
+									id++;
+									
+									
 									for (j=0; j<currentTable.listData.length; j++){
 										if (currentTable.listData[j] in data.table[i]){
 											$newRow.find('[data-name="' +currentTable.listData[j] +'"]')
@@ -699,6 +714,7 @@ $(window).resize(function(){
 											       .find("input").attr("value", data.table[i][currentTable.listData[j]]);
 										}
 									}
+									$newRow.find('.id').attr("data-value",id);
 									$newRow.appendTo($placeInsert);
 								}
 							} else{
@@ -823,13 +839,27 @@ $(window).resize(function(){
 		'RowForAdd':sampleRowForTableEdges, 
 	});
 	
+	
+	
+	
+	
+	
+	function createSelectCatalogElement(nameElement){
+		
+		$options = $('<select/>');
+		$options.append($("<option/>",{text : 'Custom'}));
+	}
+	
+	
 	$("#edges").on("change", function(e){
 		$target = $(e.target);
 		if( $target.is("select.choose-element")){
 			choose = $target.find('option:selected').val();
-			$select = $(".select-"+choose).clone();
+			$select = $("#select-"+choose).clone().addClass('select-'+choose).removeAttr('id');
 			$placeToInsert = $target.parent().next().html("");
+			alert("clear");
 			$select.appendTo($placeToInsert);
+			alert("after append"); 
 			$targetPropety = $target.parent().parent().find('.property').find('input').attr("disabled",false).attr("value","");
 		}
 		
