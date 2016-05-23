@@ -340,12 +340,13 @@
 					<table class="table table-bordered" id="edges">
 						<thead>
 							<tr>
-								<th rowspan=3 class="action-field"></th>
-								<th rowspan=3 class="id">id</th>
+								<th rowspan=2 class="action-field"></th>
+								<th rowspan=2 class="id">id</th>
 								<th colspan=2>Edge</th>
-								<th rowspan=3>Name of edge</th>
+								<th rowspan=2>Name of edge</th>
 								<th>Transformer:</th>
 								<th>type</th>
+								<th rowspan=2>ID</th>
 								<th>S, kVA</th>
 								<th>u<sub>k</sub>, %</th>
 								<th>P<sub>HH</sub>, kW</th>
@@ -382,6 +383,8 @@
 	<select id="select-KL" style="color : red">
 		<option>Choose</option>
 	</select>
+	
+	<a href="#" onclick="createSelectCatalogElement('VL')">ATTENTION</a>
 	
 </div>
 
@@ -430,10 +433,86 @@ $(window).resize(function(){
 	$("#catalog-tabs").tabs({'tabsContent':'#list-catalog-tabs'});
 	$("#network-tabs").tabs({'tabsContent':'#list-network-tabs'});
 	
-	/*The global id in current page for elements of catalog*/
-	var id=0;
-	/*The global massiv */
-	var elementCatalog = [];
+	
+	/*The manager data of Catalog */
+	Catalog = function(){
+		/*Create unique identifier for each position of catalog*/
+		this.id=0;
+		/* Container for entity of catalog
+		/* each element of array consists JSON in format 
+		/* {"id"              : "<unique_numbe_value>",       //for example: "1"
+		/*  "elementType"     : "<string_of_element_type>,    //for example: "transformer","CL","VL"
+		/*	"type"            : "<string_of_type_element>",   //for example: "ТМГ-100", "АС-35", "ВВГнг 3x10"
+		/*	"<nameProperty1>" : "<valueProperty1>",           //for example: "r0":"0.2", "s":"100", "uk":"5.5"
+		/*	......................................
+		/*	"<namePropertyN>" : "<valuePropertyN>"}    */
+		this.data = [];
+		
+		/* index of array usesData is id of entity of catalog, the value of array is array rows
+		/* edges using this entity, for example usesData[2] = [4,5] this mean that enity catalog with id 1 uses in
+		/* row of table of edge with id 4 and 5*/
+		this.usesData = [];
+		
+		/* Insert new entity in catalog if one isn't exist or 
+		/* update entity if one exist */
+		this.insertEntity = function(element){
+			var p = true;
+			for (var i in this.data){
+				if (this.data[i].id == element.id){
+					this.data[i] = element;
+					p = false;
+				} 
+			}
+			if (p) this.data.push(element);
+		}
+		
+		/* Delete all entity from container with specified elementType*/
+		this.deleteAllEntityByElementType = function(elementType){
+			var rez = [];
+			for (var i in this.data){
+				/*console.log("type:" + this.data[i].elementType)*/
+				if (this.data[i].elementType != elementType) {
+					/*console.log("condition complete");*/
+					rez.push(this.data[i]);
+				}
+			}
+			this.data = rez;
+		}
+		
+		/* Get element in JSON-format by id element*/
+		this.getElementById = function(id){
+			for (var i in this.data){
+				if (this.data[i].id == id) return this.data[i];
+			}
+			return null;
+		}
+
+		this.deleteUsesRowFromUsesData = function(idRow){
+			for (var i in this.usesData){
+				for(var j in this.usesData[i]){
+					if (this.usesData[i][j]==idRow) {
+						this.usesData[i].splice(j,1);
+					}
+				}
+			}
+		}
+		
+		this.getIndexArrayByIdEntity = function(id){
+			for (var i in this.data){
+				if (data[i].id == id) return i;
+			}
+			return null;
+		}
+		
+		this.updateData = function(){
+			
+		}
+	}
+	var catalog = new Catalog();
+	
+
+	
+	
 	
 	(function($){
 		$.fn.controllerTable = function (options) {
@@ -446,6 +525,8 @@ $(window).resize(function(){
 				'ButtonSave' : '#defaultButtonSave',
 				'ButtonDownload' :'defaultButtonTransformer',
 				'ModalDownload' : 'defaultModalDownload',
+				'CallbackFuncAddRow' : undefined,
+				'HandleFuncBeforeDeleteRow' : undefined,
 			};
 			this.each(function(){ 
 				if (options) { 
@@ -465,6 +546,8 @@ $(window).resize(function(){
 					this.buttonDownload = $(opt.ButtonDownload);
 					this.buttonSave = $(opt.ButtonSave);
 					this.modalDownload = $(opt.ModalDownload);
+					this.callbackFuncAddRow = opt.CallbackFuncAddRow;
+					this.handleFuncBeforeDeleteRow = opt.HandleFuncBeforeDeleteRow;
 					this.listData = [];
 					
 					this.init = function(){
@@ -567,6 +650,7 @@ $(window).resize(function(){
 						});
 						this.mode = 'view';
 						this.changeSelect();
+						
 						return false;
 					};
 					
@@ -574,20 +658,26 @@ $(window).resize(function(){
 					this.addRow = function addRow(){
 						this.table.show();
 						$row = this.row.clone();
-						id++; 
-						$row.find('.id').attr('data-value',id);
+						$row.find('.id').attr('data-value',catalog.id++);
 						$row.appendTo(this.table);
 						/*this.table.append(this.row);*/
-						this.table.find('tr:last td:nth-child(2) input').focus();	
+						this.table.find('tr:last td:nth-child(2) input').focus();
+						if (this.callbackFuncAddRow != undefined) this.callbackFuncAddRow($row);
 						return false;
 					}
 					
 					/*DELETE ROW*/
 					this.deleteRow = function($row){
-						$row.remove();
-						if (this.table.find('tr').size() == 1){
-							this.table.hide();
-							this.buttonAddRow.show();
+						p = true;
+						if (opt.HandleFuncBeforeDeleteRow != undefined) p = opt.HandleFuncBeforeDeleteRow($row.find('.id').attr("data-value"));
+						if (p){
+							$row.remove();
+							if (this.table.find('tr').size() == 1){
+								this.table.hide();
+								this.buttonAddRow.show();
+							}
+						} else {
+							alert("This entity has used")
 						}
 						return false;
 					}
@@ -600,38 +690,17 @@ $(window).resize(function(){
 					
 					/*ADD NEW LINE IN SELECT FOR CHOOSING*/
 					this.changeSelect = function(){
-						alert("changeSelect")
 						var nameElement = this.table.attr('id');
-						$('select#select-' + this.table.attr('id')).remove();
-						alert("delete AllSelect");
-						$options = $('<select/>',{'id': 'select-'+ this.table.attr('id'),
-												  'style' : 'color : red'
-												});
-						$options.append($("<option/>",{text : 'Custom'}));
-						$option = this.table.find('tbody').find('tr');
-						$option.each(function(){
+						$rows = this.table.find('tbody').find('tr');
+						$rows.each(function(){
 							var array = {};
 							$(this).find('td').each(function(){
 								if ($(this).attr('data-name') != undefined) {
 									array[$(this).attr('data-name')] = $(this).attr('data-value'); }
-							})
-							var json = JSON.stringify(array); 
-						
-							
-							
-							array['element'] =  nameElement;
-							elementCatalog.push(JSON.stringify(array));
-							console.log(elementCatalog);
-							
-							
-							$result = $("<option/>",{
-										text         : array.type,
-										value        : array.id,
-										"data-value" : json,
-									});
-							$result.appendTo($options); 
+							});
+							array['elementType'] =  nameElement;
+							catalog.insertEntity(array);
 						});
-						$options.appendTo('body');
 					}
 				}<!--End class actionTable-->
 				
@@ -651,6 +720,7 @@ $(window).resize(function(){
 				});
 				
 				currentTable.buttonAddRow.on('click', function(){
+					
 					currentTable.addRow();
 					return false;
 				});
@@ -702,11 +772,13 @@ $(window).resize(function(){
 								currentTable.editMode();
 								$placeInsert = $table.find("tbody");
 								$placeInsert.html("");
+								
+								
+								catalog.deleteAllEntityByElementType(currentTable.table.attr("id"));
+								
 								for (i=0; i<data.table.length; i++){
+									data.table[i].id = catalog.id++;
 									var $newRow = currentTable.row.clone();
-									id++;
-									
-									
 									for (j=0; j<currentTable.listData.length; j++){
 										if (currentTable.listData[j] in data.table[i]){
 											$newRow.find('[data-name="' +currentTable.listData[j] +'"]')
@@ -714,7 +786,6 @@ $(window).resize(function(){
 											       .find("input").attr("value", data.table[i][currentTable.listData[j]]);
 										}
 									}
-									$newRow.find('.id').attr("data-value",id);
 									$newRow.appendTo($placeInsert);
 								}
 							} else{
@@ -778,6 +849,7 @@ $(window).resize(function(){
 		'ButtonDownload': '#downloadTransformer',
 		'ButtonSave' : '#saveTransformer',
 		'ModalDownload':'#modalDownloadTransformer',
+		'HandleFuncBeforeDeleteRow' : deleteElementCatalog,
 	});
 	
 	$("#VL").controllerTable({
@@ -789,6 +861,7 @@ $(window).resize(function(){
 		'ButtonDownload': '#downloadVL',
 		'ButtonSave' : '#saveVL',
 		'ModalDownload':'#modalDownloadVL',
+		'HandleFuncBeforeDeleteRow' : deleteElementCatalog,
 	});
 	
 	$("#KL").controllerTable({
@@ -800,8 +873,27 @@ $(window).resize(function(){
 		'ButtonDownload': '#downloadKL',
 		'ButtonSave' : '#saveKL',
 		'ModalDownload':'#modalDownloadKL',
+		'HandleFuncBeforeDeleteRow' : deleteElementCatalog,
 	});
 	
+	function deleteElementCatalog(idElementCatalog){
+		if (catalog.usesData[idElementCatalog] == undefined || catalog.usesData[idElementCatalog].length == 0){
+			for (var i in catalog.data){
+				if (catalog.data[i].id == idElementCatalog) {
+					catalog.data.splice(i,1);
+					break;
+				}
+			}
+			console.log(catalog.data);
+			return true;
+		} else{
+			return false;
+		}
+	}
+	
+	function deleteRowEdge(idElementCatalog){
+		
+	}
 	
 	sampleRowForTableEdges = 
 			'<tr>'+
@@ -819,6 +911,8 @@ $(window).resize(function(){
 					'</select>'+
 				'</td>'+
 				'<td class="select-choose" data-name="id" data-value=""></td>'+
+				'<td class="input-field property" data-property-transformer="id" data-property-VL="id data-property-KL="id" '+
+					'data-value=""><input></input></td>'+
 				'<td class="input-field property" data-property-transformer="s" data-property-VL="s" data-property-KL="s" '+
 					'data-value=""><input></input></td>'+
 				'<td class="input-field property" data-property-transformer="uk" data-property-VL="L" data-property-KL="L"'+
@@ -837,53 +931,74 @@ $(window).resize(function(){
 		'ButtonDownload': '#downloadEdges',
 		'ModalDownload':'#modalDownloadEdges',
 		'RowForAdd':sampleRowForTableEdges, 
+		'CallbackFuncAddRow' : addRowEdge,
 	});
 	
 	
 	
 	
+	function addRowEdge($row){
+		var idRow = $row.find(".id").attr("data-value");
+	}
 	
 	
-	function createSelectCatalogElement(nameElement){
-		
-		$options = $('<select/>');
-		$options.append($("<option/>",{text : 'Custom'}));
+	
+	function createSelectCatalogElement(elementType,$placeToInsertSelect){
+		var $options = $('<select/>',{"class" : "currentElement"});
+		$options.append($("<option/>",{text  : 'Custom',
+									   value : 'custom'}));
+		for (var i in catalog.data){
+			if (!catalog.data.hasOwnProperty(i)) continue;
+			if (catalog.data[i].elementType == elementType) {
+				$result = $("<option/>",{
+								text  : catalog.data[i].type,
+								value : catalog.data[i].id,
+				});
+				$result.appendTo($options); 
+			}
+		}
+		$options.appendTo($placeToInsertSelect)
 	}
 	
 	
 	$("#edges").on("change", function(e){
+		alert("changeEdges");
 		$target = $(e.target);
 		if( $target.is("select.choose-element")){
-			choose = $target.find('option:selected').val();
-			$select = $("#select-"+choose).clone().addClass('select-'+choose).removeAttr('id');
+			chooseElementType = $target.find('option:selected').val();
 			$placeToInsert = $target.parent().next().html("");
-			alert("clear");
-			$select.appendTo($placeToInsert);
-			alert("after append"); 
-			$targetPropety = $target.parent().parent().find('.property').find('input').attr("disabled",false).attr("value","");
+			createSelectCatalogElement(chooseElementType,$placeToInsert);
+			$elementsProperty = $target.parent().parent().find('.property').find('input').attr("disabled",false).attr("value","");
 		}
 		
-		if ($target.is('.select-transformer') || $target.is('.select-VL') || $target.is('.select-KL')) {
-			var nameElement = $target.attr("class").replace("select-","");	
-			var data = $target.find('option:selected').data('value');
-			if (data != undefined){
-				var $targetProperty = $target.parent().parent().find('.property');
-				for (i=0; i<$targetProperty.size();i++){
-					var $cell = $targetProperty.eq(i);
-					$cell.find("input").attr("disabled",false);
-					var nameProperty = $cell.attr("data-property-"+nameElement);
-					if (nameProperty in data){
-						$cell.attr("data-value", data[nameProperty]).find('input').attr("value", data[nameProperty]).attr("disabled",true);
-					}	
-				}
-			}
-			else{
+		if ($target.is('.currentElement')){
+			var idElement = $target.find('option:selected').val();
+			if (idElement == 'custom'){
 				var $targetProperty = $target.parent().parent().find('.property').find("input").attr("disabled",false).attr("value","");
+				var idRow = $target.parent().parent().find('.id').attr("data-value");
+				catalog.deleteUsesRowFromUsesData(idRow);
+				console.log(catalog.usesData);
+			} else{
+				var entity = catalog.getElementById(idElement);
+				alert(entity.id);
+				alert(catalog.usesData[entity.id]);
+				
+				var idRow = $target.parent().parent().find('.id').attr("data-value");
+				catalog.deleteUsesRowFromUsesData(idRow);
+				if (catalog.usesData[entity.id] == undefined) catalog.usesData[entity.id] = [];
+				catalog.usesData[entity.id].push(idRow);
+				
+				console.log(catalog.usesData);
+				var $targetProperty = $target.parent().parent().find('.property');
+				$targetProperty.each(function(e){
+					var nameParametr = $(this).attr("data-property-" + entity.elementType);
+					if (nameParametr in entity){
+						$(this).attr("data-value",entity[nameParametr]).find('input').attr("value",entity[nameParametr]).attr("disabled",true);
+					}
+					console.log("data-property-" + entity.elementType);
+				});
 			}
-			
 		}
-			
-		
 	})
 	
 	sampleRowForTableNodes = 
