@@ -34,7 +34,7 @@
 			<div class="form-group ${errorUsername}">
 				<label class="control-label">Username</label>
 				<div class="input-field">
-					<form:input path="username" cssClass="form-control" />
+					<form:input path="username" cssClass="form-control" id="username"/>
 					<c:if test="${errorUsername.equals('has-error')}">
 						<span class="glyphicon glyphicon-remove control-label"></span>
 					</c:if>
@@ -91,3 +91,8 @@
 	<div class="col-md-5"></div>
 </div>
 <!--end div.row-->
+<script>
+ jQuery(document).ready(function($) {
+	
+ });
+</script>
