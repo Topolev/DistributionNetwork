@@ -7,7 +7,7 @@
 <div class="container">
 	<header>
 		<div id="wrap-logo">
-			<a href="" id="logo"> <img src="${baseUrlImg}/logo.png" /> <span>Distribution</span>
+			<a href="${baseUrl}" id="logo"> <img src="${baseUrlImg}/logo.png" /> <span>Distribution</span>
 				Networks
 			</a>
 			<button type="button" class="navbar-toggle" data-toggle="collapse"

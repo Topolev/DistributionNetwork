@@ -11,6 +11,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import by.topolev.network.domain.User;
 import by.topolev.network.service.UserService;
@@ -39,5 +41,16 @@ public class SignupController {
 		Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return "calculate";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/signup/validUsername", method=RequestMethod.GET)
+	public String validUsername(@RequestParam("usernameOrEmail") String usernameOrEmail){
+		try{
+			User user = userService.getUserByUsernameOrEmail(usernameOrEmail);
+		} catch (Exception e){
+			return "false";
+		}
+		return "true";	
 	}
 }
