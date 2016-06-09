@@ -79,6 +79,28 @@
 	
  jQuery(document).ready(function($) {
 	
+	 $('input.form-control').on("change", function(){
+		 var jsonRequest = {};
+		 jsonRequest["type"] = $(this).attr("id");
+		 jsonRequest["value"] = $(this).val();
+		 console.log(JSON.stringify(jsonRequest))
+		 $.ajax({
+			 type: "POST",
+			 contentType : "application/json",
+			 url: "${home}signup/validate",
+			 timeout: 100000,
+			 dataType: "json",
+			 data: JSON.stringify(jsonRequest),
+			 success: function(jsonResponse){
+				 console.log("SUCCESS");
+			 },
+			 error: function(textError){
+				console.log("ERROR");
+			 }
+		 })
+	 })
+	 
+	 /*
 	 function validExcitingUsernameEmail($input){
 		 var error = true;
 		 if ($input.is("#username")) {
@@ -176,6 +198,6 @@
 		if (!(isValidUsername() & isValidEmail() & isValidPassword())){
 			e.preventDefault();
 		}
-	})
+	})*/
  });
 </script>
