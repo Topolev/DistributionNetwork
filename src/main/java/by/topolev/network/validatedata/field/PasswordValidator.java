@@ -1,13 +1,13 @@
-package by.topolev.network.api.signup;
+package by.topolev.network.validatedata.field;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmailValidator implements Validator<String>{
+public class PasswordValidator implements ValidatorField<String>{
 
 	@Override
 	public void validate(String arg) throws NotValidException {
-			
+		
 	}
 
 }

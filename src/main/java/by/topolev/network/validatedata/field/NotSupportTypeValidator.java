@@ -1,4 +1,4 @@
-package by.topolev.network.api.signup;
+package by.topolev.network.validatedata.field;
 
 public class NotSupportTypeValidator extends Exception{
 

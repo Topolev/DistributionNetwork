@@ -1,4 +1,4 @@
-package by.topolev.network.api.signup;
+package by.topolev.network.validatedata.field;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,9 +8,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 @Component
-public class SignupValidatorStrategy implements ValidatorStrategy {
+public class SignupFieldValidatorStrategy implements ValidatorFieldStrategy {
 
-	private List<Validator> emailValidators;
+	private List<ValidatorField> emailValidators;
 	
 	@Resource
 	private EmailValidator emailValidator;
@@ -24,8 +24,8 @@ public class SignupValidatorStrategy implements ValidatorStrategy {
 	private PasswordValidator passwordValidator;
 
 	@Override
-	public List<Validator> find(String type) throws NotSupportTypeValidator {
-		ArrayList<Validator> arrayList = new ArrayList<>();
+	public List<ValidatorField> find(String type) throws NotSupportTypeValidator {
+		ArrayList<ValidatorField> arrayList = new ArrayList<>();
 		if (type.equals("email")) {
 			arrayList.addAll(Arrays.asList(emailValidator,uniqueEmailValidator));
 			return arrayList;
@@ -34,10 +34,10 @@ public class SignupValidatorStrategy implements ValidatorStrategy {
 			arrayList.addAll(Arrays.asList(usernameValidator, uniqueUsernameValidator));
 			return arrayList;
 		}
-		/*if (type.equals("password")) {
+		if (type.equals("password")) {
 			arrayList.addAll(Arrays.asList(passwordValidator));
 			return arrayList;
-		}*/
+		}
 		throw new NotSupportTypeValidator();
 	}
 

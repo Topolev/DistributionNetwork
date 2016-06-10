@@ -21,7 +21,8 @@
 	<!-- Определяем папки, в которых будем автоматически искать бины-компоненты (@Component, @Service)  -->
 	<context:component-scan base-package="by.topolev.network.dao" />
 	<context:component-scan base-package="by.topolev.network.service" />
-	<context:component-scan base-package="by.topolev.network.api" />
+	<context:component-scan base-package="by.topolev.network.convertor" />
+	<context:component-scan base-package="by.topolev.network.validatedata.field" />
 
 	<!-- Файл с настройками ресурсов для работы с данными (Data Access Resources) -->
 	<import resource="data.xml" />

@@ -2,7 +2,7 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<spring:hasBindErrors name="user">
+<spring:hasBindErrors name="signupForm">
 
 	<c:set var="errorUsername" value="has-success" />
 	<c:if test="${errors.hasFieldErrors('username')}">
@@ -18,18 +18,13 @@
 	<c:if test="${errors.hasFieldErrors('password')}">
 		<c:set var="errorPassword" value="has-error" />
 	</c:if>
-
-	<c:set var="errorConfirmPassword" value="has-success" />
-	<c:if test="${errors.hasFieldErrors('confirmPassword')}">
-		<c:set var="errorConfirmPassword" value="has-error" />
-	</c:if>
 </spring:hasBindErrors>
 
 
 <div class="row">
 	<div class="col-md-7">
 		<p id="header">Create your personal account</p>
-		<form:form commandName="user" method="POST" id="form-register">
+		<form:form commandName="signupForm" method="POST" id="form-register">
 			
 			<div class="form-group ${errorUsername}">
 				<label class="control-label">Username</label>
@@ -38,7 +33,11 @@
 					<span class="glyphicon glyphicon-remove control-label"></span>
 					<span class="glyphicon glyphicon-ok control-label"></span>
 				</div>
-				<span class="control-label error-text">Username must consist at least 7 characters</span>
+				<spring:hasBindErrors name="signupForm">
+					<c:forEach items="${errors.getFieldErrors('username')}" var="error">
+						<span class="control-label error-text">Username <c:out value="${error.getDefaultMessage()}"/></span>
+					</c:forEach>
+				</spring:hasBindErrors>
 				<span class="default-text">Use at least seven characters</span>
 			</div>
 			
@@ -49,7 +48,11 @@
 					<span class="glyphicon glyphicon-remove control-label"></span>
 					<span class="glyphicon glyphicon-ok control-label"></span>
 				</div>
-				<span class="control-label error-text">Invalid email address.</span>
+				<spring:hasBindErrors name="signupForm">
+					<c:forEach items="${errors.getFieldErrors('email')}" var="error">
+						<span class="control-label error-text">Email <c:out value="${error.getDefaultMessage()}"/></span>
+					</c:forEach>
+				</spring:hasBindErrors>
 				<span class="default-text">We promise not to share your email with anyone</span>
 			</div>
 			
@@ -60,8 +63,12 @@
 					<span class="glyphicon glyphicon-remove control-label"></span>
 					<span class="glyphicon glyphicon-ok control-label"></span>
 				</div>
+				<spring:hasBindErrors name="signupForm">
+					<c:forEach items="${errors.getFieldErrors('password')}" var="error">
+						<span class="control-label error-text">Password <c:out value="${error.getDefaultMessage()}"/></span>
+					</c:forEach>
+				</spring:hasBindErrors>
 				<span class="default-text">Use at least seven characters</span>
-				<span class="control-label error-text">Use at least seven characters</span>
 			</div>
 
 			<div class="form-group">
@@ -80,6 +87,7 @@
  jQuery(document).ready(function($) {
 	
 	 $('input.form-control').on("change", function(){
+		 $this = $(this);
 		 var jsonRequest = {};
 		 jsonRequest["type"] = $(this).attr("id");
 		 jsonRequest["value"] = $(this).val();
@@ -87,12 +95,20 @@
 		 $.ajax({
 			 type: "POST",
 			 contentType : "application/json",
-			 url: "${home}signup/validate",
+			 url: "${home}signup/validateField",
 			 timeout: 100000,
 			 dataType: "json",
 			 data: JSON.stringify(jsonRequest),
 			 success: function(jsonResponse){
-				 console.log("SUCCESS");
+				 if (jsonResponse.valid == false){
+					 for (var i in jsonResponse.messages){
+						 $el = $("<span />", {'class':'error-text control-label'}).text(jsonResponse.messages[i].message);
+						 $this.parents('.form-group').addClass("has-error").removeClass("has-success").find('.error-text').remove();
+						 $this.parents('.input-field').after($el);
+					 }
+				 } else {
+					 $this.parents('.form-group').removeClass("has-error").addClass("has-success")
+				 }
 			 },
 			 error: function(textError){
 				console.log("ERROR");

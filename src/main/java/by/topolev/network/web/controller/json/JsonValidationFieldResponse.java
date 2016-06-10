@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JsonValidationFieldResponse {
-	private List<String> messages = new ArrayList<>();
+	private List<ErrorMessage> errorMessages = new ArrayList<>();
 	private Boolean valid = true;
 	public Boolean getValid() {
 		return valid;
@@ -12,13 +12,13 @@ public class JsonValidationFieldResponse {
 	public void setValid(Boolean valid) {
 		this.valid = valid;
 	}
-	public List<String> getMessages() {
-		return messages;
+	public List<ErrorMessage> getMessages() {
+		return errorMessages;
 	}
-	public void setMessages(List<String> messages) {
-		this.messages = messages;
+	public void setMessages(List<ErrorMessage> errorMessages) {
+		this.errorMessages = errorMessages;
 	}
-	public void addMessage(String message){
-		messages.add(message);
+	public void addErrorMessage(ErrorMessage errorMessage){
+		errorMessages.add(errorMessage);
 	}
 }

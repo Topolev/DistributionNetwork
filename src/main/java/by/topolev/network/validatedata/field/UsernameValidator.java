@@ -1,11 +1,11 @@
-package by.topolev.network.api.signup;
+package by.topolev.network.validatedata.field;
 
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class UsernameValidator implements Validator<String>{
+public class UsernameValidator implements ValidatorField<String>{
 
 	@Override
 	public void validate(String arg) throws NotValidException {

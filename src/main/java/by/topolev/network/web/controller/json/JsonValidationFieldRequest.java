@@ -1,6 +1,6 @@
 package by.topolev.network.web.controller.json;
 
-public class JsonValidateFieldRequest {
+public class JsonValidationFieldRequest {
 	String type;
 	String value;
 	public String getType() {
