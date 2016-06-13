@@ -48,9 +48,13 @@
 					
 					
 					<div class="default-text-table alert alert-warning">
-						To display the table , you must add at least one 
+						<b>Short instruction</b></br>
+						This table has two modes: "View mode" and "Edit mode".</br>
+						For edit rows of table use "Edit mode". All of the columns will not be empty. Don't remember change mode after edit rows. New changes will
+						effect only after switching on "View mode".</br>  
+						To display the table, you must add at least one 
 						power transformer using the button 
-						<span class="bold">"Add transformer"</span> 
+						<span class="bold">"Add transformer"</span> in "Edit mode" 
 						or download CSV format file usung the
 						button <span class="bold">"Download catalog"</span>.
 					</div>
@@ -374,17 +378,9 @@
 	<div class="tab" id="results">Результаты расчета</div>
 </div>
 <div id="hidden-workspace">
-	<select id="select-transformer" style="color : red">
-		<option>Choose</option>
-	</select>
-	<select id="select-VL" style="color : red">
-		<option>Choose</option>
-	</select>
-	<select id="select-KL" style="color : red">
-		<option>Choose</option>
-	</select>
+
 	
-	<a href="#" onclick="createSelectCatalogElement('VL')">ATTENTION</a>
+	
 	
 </div>
 
@@ -449,7 +445,7 @@ $(window).resize(function(){
 		this.data = [];
 		
 		/* index of array usesData is id of entity of catalog, the value of array is array rows
-		/* edges using this entity, for example usesData[2] = [4,5] this mean that enity catalog with id 1 uses in
+		/* edges using this entity, for example usesData[1] = [4,5] this mean that enity catalog with id 1 uses in
 		/* row of table of edge with id 4 and 5*/
 		this.usesData = [];
 		
@@ -884,6 +880,11 @@ $(window).resize(function(){
 					break;
 				}
 			}
+			/*Delete entity from current select in table #edge*/
+			var selector = '#edges select.currentElement option[value="' + idElementCatalog + '"]';
+			$(selector).remove();
+			
+			
 			console.log(catalog.data);
 			return true;
 		} else{
@@ -960,9 +961,22 @@ $(window).resize(function(){
 		$options.appendTo($placeToInsertSelect)
 	}
 	
+	function printArray(array){
+		
+		var result = '';
+		for (var i in array){
+			result = result + i + ' : ';
+			for (var j in array[i]){
+				result = result + array[i][j] + ", ";
+			}
+			result += "\n";
+		}
+		return result;
+	}
+	
 	
 	$("#edges").on("change", function(e){
-		alert("changeEdges");
+		
 		$target = $(e.target);
 		if( $target.is("select.choose-element")){
 			chooseElementType = $target.find('option:selected').val();
@@ -981,10 +995,18 @@ $(window).resize(function(){
 			} else{
 				var entity = catalog.getElementById(idElement);
 				alert(entity.id);
-				alert(catalog.usesData[entity.id]);
+				
+				
+				
 				
 				var idRow = $target.parent().parent().find('.id').attr("data-value");
 				catalog.deleteUsesRowFromUsesData(idRow);
+				
+				
+				
+				
+				
+				
 				if (catalog.usesData[entity.id] == undefined) catalog.usesData[entity.id] = [];
 				catalog.usesData[entity.id].push(idRow);
 				

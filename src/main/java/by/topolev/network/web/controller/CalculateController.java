@@ -5,11 +5,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,6 +63,69 @@ public class CalculateController {
 			result.textError = "CSV file is invalid";
 		}
 		return result;
+	}
+	
+	@RequestMapping(value = "/api/test", method=RequestMethod.GET)
+	public @ResponseBody ResponseEntity<String> doSmth(@RequestParam("code") String code) {
+		if("200".equals(code)) {
+			ResponseEntity<String> responseEntity = new ResponseEntity<>("Hello, Vova", HttpStatus.OK);
+			return responseEntity;
+		} 
+		if("400".equals(code)) {
+			return new ResponseEntity<>("Goodbye, Vova", HttpStatus.BAD_REQUEST);
+		}
+		
+		if("500".equals(code)) {
+			return new ResponseEntity<>("Hello, Vova", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		//validatorStrategy.find(type).validate(value);
+		
+		/*
+		 *
+		 * 
+		 * class UniqueLoginValidator implements Validator {
+		 * 
+		 * }
+		 * 
+		 * @Component
+		  class SignUpValidatorStrategy implements ValidatorStrategy {
+		  	@Resource
+		  	private UniqueLoginValidator validator1;
+		  	@Resource
+		  	private FirstNameValidator validator2;
+		  	@Resource
+		  	private LoginValidator validator3;
+		  	
+		  	public Validator find(String type) {
+		  	
+		  		if("login".equals(type)) {
+		  			return validator1;
+		  		}
+		  		
+		  		return ...;
+	  		}
+	  	}
+	  	
+	  	@Component
+	  	class ProfileValidatorStrategy implements ValidatorStrategy {
+	  		@Resource
+	  		private FirstNameValidator validator1;
+	  		@Resource
+	  		private BirthDateValidator validator2;
+	  		@Resource
+	  		private UserRoleValidator validator3;
+	  		@Resource 
+	  		private PermissionValidator validator4;
+	  	
+	  		public Validator find(String type) {
+	  		
+	  			return ...;
+	  		}
+	  	}
+		  	
+		 */
+		return new ResponseEntity<>("Vova is created", HttpStatus.CREATED);
+		
 	}
 
 	@RequestMapping(value = "/calculate/save", method = RequestMethod.POST)
