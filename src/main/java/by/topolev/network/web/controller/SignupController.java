@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -39,6 +40,9 @@ public class SignupController {
 	@Autowired
 	private ValidatorFieldStrategy validatorFieldStrategy;
 	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
 	@Resource(name="userSignupFormConvertor")
 	private Convertor convertor;
 	
@@ -60,9 +64,9 @@ public class SignupController {
 		userService.create(user,"ROLE_USER");
 		
 		/*Authenntication user after registration*/
-		Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+		Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsService.loadUserByUsername(user.getUsername()), user.getPassword());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		return "servicePackage";
+		return "redirect:user/servicePackages";
 	}
 	
 	@RequestMapping(value="signup/validateField", method =RequestMethod.POST)

@@ -3,6 +3,7 @@ package by.topolev.network.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -10,26 +11,31 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
+import javax.persistence.ManyToOne;
 @Entity
 public class User {
 	@Id
 	@GeneratedValue
 	private Long id;
 	
-	@NotBlank
-	@Size(min=3, max=16)
 	private String username;
 	
-	@Email
-	@NotBlank
 	private String email;
 	
-	@NotBlank
-	@Size(min=3)
+	@Column(name = "firstname", nullable = false, columnDefinition = "varchar(255) default ''")
+	private String firstname = "";
+	
+	@Column(name = "lastname", nullable = false, columnDefinition = "varchar(255) default ''")
+	private String lastname = "";
+	
+	@Column(name = "nameOrganization", nullable = false, columnDefinition = "varchar(255) default ''")
+	private String nameOrganization="";
+	
+	
+	@Column(name = "urlAvatar", nullable = false, columnDefinition = "varchar(255) default 'profile.jpg'")
+	private String urlAvatar="profile.jpg";
+
+	
 	private String password;
 	@ManyToMany(fetch=FetchType.EAGER)
 	@JoinTable(
@@ -39,6 +45,10 @@ public class User {
 	)
 	private Set<Role> roles = new HashSet<Role>();
 
+	@ManyToOne
+	@JoinColumn (name="SERVICE_PACKAGE_ID")
+	private ServicePackage servicePackage;
+	
 	public Long getId() {
 		return id;
 	}
@@ -81,6 +91,46 @@ public class User {
 	
 	public void setRole(Role role){
 		this.roles.add(role);
+	}
+
+	public ServicePackage getServicePackage() {
+		return servicePackage;
+	}
+
+	public void setServicePackage(ServicePackage servicePackage) {
+		this.servicePackage = servicePackage;
+	}
+
+	public String getFirstname() {
+		return firstname;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+	public String getNameOrganization() {
+		return nameOrganization;
+	}
+
+	public void setNameOrganization(String nameOrganization) {
+		this.nameOrganization = nameOrganization;
+	}
+
+	public String getUrlAvatar() {
+		return urlAvatar;
+	}
+
+	public void setUrlAvatar(String urlAvatar) {
+		this.urlAvatar = urlAvatar;
 	}
 	
 	

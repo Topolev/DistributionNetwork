@@ -10,7 +10,13 @@
 		<put-attribute name="footer"
 			value="/WEB-INF/views/baseJSP/common-footer.jsp" />
 	</definition>
-
+	
+	<definition name="notSupportFunctionality" extends="baseLayout">
+		<put-attribute name="csspage" value="style-index.css" />
+		<put-attribute name="body" value="/WEB-INF/views/notSupportFunctionality.jsp" />
+	</definition>
+	
+	
 	<definition name="index" extends="baseLayout">
 		<put-attribute name="csspage" value="style-index.css" />
 		<put-attribute name="body" value="/WEB-INF/views/index.jsp" />
@@ -20,9 +26,14 @@
 		<put-attribute name="csspage" value="style-register.css" />
 		<put-attribute name="body" value="/WEB-INF/views/signup.jsp" />
 	</definition>
+	
+	<definition name="profile" extends="baseLayout">
+		<put-attribute name="csspage" value="style-profile.css" />
+		<put-attribute name="body" value="/WEB-INF/views/profile.jsp" />
+	</definition>
 
 	<definition name="servicePackage" extends="baseLayout">
-		<put-attribute name="csspage" value="style-calculate.css" />
+		<put-attribute name="csspage" value="style-servicePackage.css" />
 		<put-attribute name="body" value="/WEB-INF/views/servicePackage.jsp" />
 	</definition>
 	

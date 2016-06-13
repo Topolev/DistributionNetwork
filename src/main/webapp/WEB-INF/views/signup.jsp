@@ -3,7 +3,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <spring:hasBindErrors name="signupForm">
-
 	<c:set var="errorUsername" value="has-success" />
 	<c:if test="${errors.hasFieldErrors('username')}">
 		<c:set var="errorUsername" value="has-error" />
