@@ -65,69 +65,6 @@ public class CalculateController {
 		return result;
 	}
 	
-	@RequestMapping(value = "/api/test", method=RequestMethod.GET)
-	public @ResponseBody ResponseEntity<String> doSmth(@RequestParam("code") String code) {
-		if("200".equals(code)) {
-			ResponseEntity<String> responseEntity = new ResponseEntity<>("Hello, Vova", HttpStatus.OK);
-			return responseEntity;
-		} 
-		if("400".equals(code)) {
-			return new ResponseEntity<>("Goodbye, Vova", HttpStatus.BAD_REQUEST);
-		}
-		
-		if("500".equals(code)) {
-			return new ResponseEntity<>("Hello, Vova", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		//validatorStrategy.find(type).validate(value);
-		
-		/*
-		 *
-		 * 
-		 * class UniqueLoginValidator implements Validator {
-		 * 
-		 * }
-		 * 
-		 * @Component
-		  class SignUpValidatorStrategy implements ValidatorStrategy {
-		  	@Resource
-		  	private UniqueLoginValidator validator1;
-		  	@Resource
-		  	private FirstNameValidator validator2;
-		  	@Resource
-		  	private LoginValidator validator3;
-		  	
-		  	public Validator find(String type) {
-		  	
-		  		if("login".equals(type)) {
-		  			return validator1;
-		  		}
-		  		
-		  		return ...;
-	  		}
-	  	}
-	  	
-	  	@Component
-	  	class ProfileValidatorStrategy implements ValidatorStrategy {
-	  		@Resource
-	  		private FirstNameValidator validator1;
-	  		@Resource
-	  		private BirthDateValidator validator2;
-	  		@Resource
-	  		private UserRoleValidator validator3;
-	  		@Resource 
-	  		private PermissionValidator validator4;
-	  	
-	  		public Validator find(String type) {
-	  		
-	  			return ...;
-	  		}
-	  	}
-		  	
-		 */
-		return new ResponseEntity<>("Vova is created", HttpStatus.CREATED);
-		
-	}
-
 	@RequestMapping(value = "/calculate/save", method = RequestMethod.POST)
 	@ResponseBody
 	public String prepareCSVFile(@RequestBody CatalogData data) {

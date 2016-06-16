@@ -16,13 +16,13 @@ import by.topolev.network.web.controller.form.ServicePackageForm;
 
 @Controller
 public class ServicePackageController {
-	
+
 	private final static Long DEFAULT_ID_SERVICE_PACKAGE = 1l;
 	@Autowired
 	private ServicePackageService servicePackageService;
-	
-	@RequestMapping(value="/user/servicePackages", method=RequestMethod.GET)
-	public ModelAndView showServicePackage(){
+
+	@RequestMapping(value = "/user/servicePackages", method = RequestMethod.GET)
+	public ModelAndView showServicePackage() {
 		List<ServicePackageForm> servicePackages;
 		servicePackages = servicePackageService.findAllServicePackage();
 		ModelAndView model = new ModelAndView();
@@ -31,22 +31,23 @@ public class ServicePackageController {
 		model.addObject("activeServicePackage", DEFAULT_ID_SERVICE_PACKAGE);
 		return model;
 	}
-	
-	@RequestMapping(value="/user/servicePackages/change", method=RequestMethod.GET)
-	public String changeServicePackage(@RequestParam Long idServicePackage){
+
+	@RequestMapping(value = "/user/servicePackages/change", method = RequestMethod.GET)
+	public String changeServicePackage(@RequestParam Long idServicePackage) {
 		System.out.println(idServicePackage);
-		if (servicePackageService.isFreeServicePackage(idServicePackage)){
-			if (servicePackageService.changeServicePackageForCurrentUser(idServicePackage)){
+		if (servicePackageService.isFreeServicePackage(idServicePackage)) {
+			if (servicePackageService.changeServicePackageForCurrentUser(idServicePackage)) {
 				return "redirect:/calculate";
-			} else{
+			} else {
 				return "redirect:/signin";
 			}
 		} else {
 			return "redirect:/notSupportFunctionality";
 		}
 	}
-	@RequestMapping(value="/user/servicePackages/show")
-	public String showServicePackageForUser(){
+
+	@RequestMapping(value = "/user/servicePackages/show")
+	public String showServicePackageForUser() {
 		return null;
 	}
 }

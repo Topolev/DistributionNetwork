@@ -1,4 +1,4 @@
-<footer class="container">
+ <footer class="container">
 		<div id="wrap-footer">
 			<a href="" id="logo-footer"></a>
 			<ul>

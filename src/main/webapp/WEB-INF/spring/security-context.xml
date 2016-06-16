@@ -6,9 +6,10 @@ http://www.springframework.org/schema/security
 http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
 	<http auto-config="true" use-expressions="true">
-		<intercept-url pattern="/secure/**" access="ROLE_USER" />
-		<intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
-		<intercept-url pattern="/login.jsp*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<intercept-url pattern="/secure/**" access="hasRole('ROLE_USER')" />
+		<intercept-url pattern="/user/**" access="hasRole('ROLE_USER')" />
+		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/login.jsp*" access="hasRole('IS_AUTHENTICATED_ANONYMOUSLY')" />
 		<form-login login-page="/signin"
 			authentication-failure-url="/signin-fail" default-target-url="/calculate" />
 	</http>

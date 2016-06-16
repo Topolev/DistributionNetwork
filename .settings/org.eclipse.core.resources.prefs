@@ -1,4 +1,13 @@
 eclipse.preferences.version=1
+encoding//src/main/java/by/topolev/network/convertor/Convertor.java=UTF-8
+encoding//src/main/java/by/topolev/network/convertor/ProfileFormConvertor.java=UTF-8
+encoding//src/main/java/by/topolev/network/convertor/ServicePackageFormConvertor.java=UTF-8
+encoding//src/main/java/by/topolev/network/convertor/UserSignupFormConvertor.java=UTF-8
+encoding//src/main/java/by/topolev/network/dao/RoleDao.java=UTF-8
 encoding//src/main/java/by/topolev/network/web/controller/ProfileUserController.java=UTF-8
+encoding//src/main/java/by/topolev/network/web/fasad/ProfileFasadImpl.java=UTF-8
+encoding//src/main/webapp/WEB-INF/views/baseJSP/common-footer.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/baseJSP/common-header.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/calculate.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/profile.jsp=UTF-8
+encoding/<project>=UTF-8
