@@ -7,11 +7,12 @@
 		<p id="header">Editing your profile</p>
 
 			
-		<form id="form-profile">
-		
+		<form:form modelAttribute="profileForm" action="${home}user/profileUpdate" method="POST">
 			<div class="form-group" id="image-profile">
+				<form:hidden path="urlAvatar" id="fileAvatar"/>
 				<label class="control-label">Profile picture</label> 
-					<img src="${home}resources/upload/${profile.getUrlAvatar()}" id="profile-photo" />
+					
+					<img src="${home}user/photo?fileName=${profileForm.getUrlAvatar()}" id="profile-photo" />
 				<div id="wrap-image-btn">
 					<div class="file-upload">
 						<input type="file" name=""/>
@@ -22,39 +23,28 @@
 			</div>
 			
 			<div class="form-group">
-				<label class="control-label">First Name</label>
+				<form:label path="firstname" cssClass="control-label">First Name</form:label>
 				<div class="input-field">
-					<input type="text" class="form-control" value="${profile.getFirstname()}"></input> <span
-						class="glyphicon glyphicon-remove control-label"></span> <span
-						class="glyphicon glyphicon-ok control-label"></span>
+					<form:input path="firstname" cssClass="form-control"/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label">Last Name</label>
+				<form:label path="lastname">Lastname</form:label>
 				<div class="input-field">
-					<input type="text" class="form-control" value="${profile.getLastname()}"></input> <span
-						class="glyphicon glyphicon-remove control-label"></span> <span
-						class="glyphicon glyphicon-ok control-label"></span>
+					<form:input path="lastname" cssClass="form-control"/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label">Organization name</label>
+				<form:label path="nameOrganization">Organization name</form:label>
 				<div class="input-field">
-					<input type="text" class="form-control"></input> <span
-						class="glyphicon glyphicon-remove control-label"></span> <span
-						class="glyphicon glyphicon-ok control-label"></span>
+					<form:input path="nameOrganization" cssClass="form-control"/> 
 				</div>
 			</div>
 
-
-
-
-
 			<div class="form-group">
-				<button type="submit" id="button-profile" class="btn">Update
-					profile</button>
+				<form:button id="button-profile" css="btn">Update profile</form:button>
 			</div>
-		</form>
+		</form:form>
 	</div>
 	<div class="col-md-5"></div>
 </div>
@@ -71,7 +61,7 @@
         	<img src="" id="crop-image">
       </div>
       <div class="modal-footer">
-      <form action=""${home}user/cropPhoto">
+      <form action="${home}user/cropPhoto">
          <input type="hidden" name="fileName" id="fileName">
         <button type="button" class="btn btn-primary" id="btn-crop-image">Save image</button>
       </form>
@@ -82,8 +72,7 @@
 
 
 
- <script type="text/javascript" src="${home}resources/js/jquery.Jcrop.min.js"></script>
- <link rel="stylesheet" type="text/css" href="${home}resources/css/jquery.Jcrop.min.css" />
+
  
  <script type="text/javascript" src="${home}resources/js/jquery.imgareaselect.min.js"></script>
  <link rel="stylesheet" type="text/css" href="${home}resources/css/imgareaselect-default.css" />
@@ -129,6 +118,7 @@ $('input[type=file]').change(function(e){
 
 $("#btn-crop-image").on("click", function(e){
 	e.preventDefault();
+	alert("asd");
 	var selection = imgCrop.getSelection();
 	 $.get(
 		'${home}user/cropPhoto',
@@ -143,7 +133,7 @@ $("#btn-crop-image").on("click", function(e){
 		function(data){
 			$("#profile-photo").attr("src", "${home}user/photo?fileName="+ data);
 			$("#modal-upload").modal("toggle");
-			
+			$("#fileAvatar").val(data);
 		}
 	);
 });

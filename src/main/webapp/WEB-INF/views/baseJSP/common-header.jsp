@@ -32,10 +32,10 @@
 								</a>
 								<spring:url value="j_spring_security_logout" var="urlLogout"/>
 								<ul class="dropdown-menu" role="menu" id="menu-profile">
-									<li><a href="">Your profile</a></li>
+									<li><a href="${baseUrl}user/profile">Your profile</a></li>
 									<li><a href="">Settings</a></li>
 									<li class="divider"></li>
-									<li><a href="${urlLogout}">Sign Out</a></li>
+									<li><a href="${baseUrl}j_spring_security_logout">Sign Out</a></li>
 								</ul>
 							</div>
 						</sec:authorize>

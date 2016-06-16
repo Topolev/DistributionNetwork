@@ -64,7 +64,14 @@ public class SignupController {
 		userService.create(user,"ROLE_USER");
 		
 		/*Authenntication user after registration*/
-		Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsService.loadUserByUsername(user.getUsername()), user.getPassword());
+		
+		Authentication authentication = new UsernamePasswordAuthenticationToken(
+				userDetailsService.loadUserByUsername(user.getUsername()),
+				user.getPassword(),
+				userDetailsService.loadUserByUsername(user.getUsername()).getAuthorities()
+				);
+		/*Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsService.loadUserByUsername(user.getUsername()), user.getPassword());*/
+		System.out.println(authentication.getName());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return "redirect:user/servicePackages";
 	}

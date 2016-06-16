@@ -6,18 +6,19 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+@Transactional(propagation=Propagation.REQUIRED)
 public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T, PK> {
 	@PersistenceContext
 	protected EntityManager em;
 	protected Class<T> type;
-	
-	GenericDaoImpl(Class<T> type){
+
+	GenericDaoImpl(Class<T> type) {
 		this.type = type;
 	};
-	
+
 	@Override
 	public T create(T persistance) {
 		em.persist(persistance);
@@ -27,20 +28,14 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 
 	@Override
 	public T update(T persistance) {
-		try{
-			return em.merge(persistance);
-		} catch(Exception ex){
-			return null;
-		}
+		return em.merge(persistance);
 	}
 
 	@Override
 	public Boolean delete(T pesistance) {
-		try {
-			em.remove(pesistance);
-		} catch (Exception ex) {
-			return false;
-		}
+
+		em.remove(pesistance);
+
 		return true;
 	}
 
@@ -52,7 +47,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	@Override
 	public List<T> findAll() {
 		System.out.println(type.getSimpleName());
-		return em.createQuery("select c from "+ type.getSimpleName() + " c").getResultList();
+		return em.createQuery("select c from " + type.getSimpleName() + " c").getResultList();
 	}
 
 	public EntityManager getEm() {
@@ -62,7 +57,5 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	public void setEm(EntityManager em) {
 		this.em = em;
 	}
-	
-	
 
 }

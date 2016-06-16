@@ -1,75 +1,79 @@
 package by.topolev.network.web.controller;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Iterator;
-import java.util.UUID;
 
-import javax.imageio.ImageIO;
-
-import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import by.topolev.network.config.ConfigClass;
+import by.topolev.network.service.ImageService;
 import by.topolev.network.service.UserService;
 import by.topolev.network.web.controller.form.ProfileForm;
-import by.topolev.network.web.fasad.ProfileFasad;
+import by.topolev.network.web.fasad.ProfileFacade;
 
 @Controller
 public class ProfileUserController {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProfileUserController.class);
+	
 	@Autowired
 	private UserService userService;
 	@Autowired
-	private ProfileFasad profileFasad;
+	private ImageService imageService;
+	@Autowired
+	private ProfileFacade profileFasad;
 	
 	@RequestMapping(value="/user/profile", method = RequestMethod.GET)
 	public ModelAndView showProfile(){
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("profile");
 		ProfileForm profileForm = userService.showFieldUser();
-		modelAndView.addObject("profile", profileForm);
+		modelAndView.addObject("profileForm", profileForm);
 		return modelAndView;
 	}
-	@RequestMapping(value="/user/profile")
-	public ModelAndView saveProfile(){
-		return null;
+	
+	@RequestMapping(value="/user/profileUpdate", method = RequestMethod.POST)
+	public String updateProfile(@ModelAttribute ProfileForm profileForm){
+		profileFasad.updateUser(profileForm);
+		return "redirect:/user/profile";
 	}
+
 	
 	@RequestMapping(value="/user/photo", method = RequestMethod.GET)
 	@ResponseBody
 	public byte[] getImage(@RequestParam("fileName") String fileName){
 		byte[] image = null;
 		try {
-			image = profileFasad.getImage(fileName);
+			image = imageService.getImage(fileName);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info(String.format("Can not get image with name \"%s\"",fileName));
 		}
 		return image;
 	}
 	
 	@RequestMapping(value="/user/uploadPhoto", method=RequestMethod.POST)
-	public @ResponseBody String uploadPhoto(MultipartHttpServletRequest request){
+	public @ResponseBody ResponseEntity<String> uploadPhoto(MultipartHttpServletRequest request){
 		Iterator<String> itr =  request.getFileNames();
 	    String fileNameImg = null;
+	    ResponseEntity<String> response = null;
 		try {
-			fileNameImg = profileFasad.uploadPhoto(request.getFile(itr.next()));
-		} catch (IOException e) {
-			e.printStackTrace();
+			fileNameImg = imageService.uploadPhoto(request.getFile(itr.next()));
+		} catch (Exception e) {
+			LOGGER.warn("Problem with upload image", e);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		return fileNameImg;
+		return new ResponseEntity<String>(fileNameImg, HttpStatus.OK);
 	}
 
 	
@@ -86,9 +90,9 @@ public class ProfileUserController {
 		
 		String fileCropName = null;
 		try {
-			fileCropName = profileFasad.cropPhoto(fileName, x1, y1, width, height, widthScaleImg);
+			fileCropName = imageService.cropPhoto(fileName, x1, y1, width, height, widthScaleImg);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info("Unabe to crop image");
 		}
 		return fileCropName;
 		
