@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
-import javax.transaction.Transactional;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -19,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import by.topolev.network.config.ConfigClass;
@@ -107,7 +107,7 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	@Override
-	@org.springframework.transaction.annotation.Transactional(propagation=Propagation.REQUIRED)
+	@Transactional
 	public void deleteImage(String url) {
 		File image = new File(directorySaveImage + url);
 		if (image.exists()) {
@@ -180,7 +180,6 @@ public class ImageServiceImpl implements ImageService {
 			throw new IOException();
 		}
 		createUrlImageInDB(fileCropImage.getName(), false);
-		deleteImage(fileCurrentImage.getName());
 		return fileCropImage.getName();
 	}
 
