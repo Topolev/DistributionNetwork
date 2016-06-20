@@ -23,4 +23,5 @@ public class DefaultSpringBeanJobFactory extends SpringBeanJobFactory implements
         ctx.getAutowireCapableBeanFactory().autowireBean(jobInstance);
         return jobInstance;
     }
+    
 }

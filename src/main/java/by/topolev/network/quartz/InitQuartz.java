@@ -45,6 +45,16 @@ public class InitQuartz implements ApplicationListener<ContextRefreshedEvent>{
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("urlImageDao", urlImageDao);
 				map.put("imageService", imgaeService);
+				map.put("imageService", imgaeService);
+				map.put("imageService", imgaeService);
+				map.put("imageService", imgaeService);
+				map.put("imageService", imgaeService);
+				map.put("imageService", imgaeService);
+				map.put("imageService", imgaeService);
+				map.put("imageService", imgaeService);
+				map.put("imageService", imgaeService);
+				map.put("imageService", imgaeService);
+				map.put("imageService", imgaeService);
 				map.put("maxTimeExcitingUnusingUrlImage", MAX_TIME_EXCITING_UNUSING_URL_IMAGE);
 				
 				JobDataMap jobDataMap = JobDataMapSupport.newJobDataMap(map);
