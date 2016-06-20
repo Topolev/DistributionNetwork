@@ -24,8 +24,8 @@ import org.springframework.stereotype.Component;
 
 import by.topolev.network.dao.UrlImageDao;
 import by.topolev.network.service.ImageService;
-import by.topolev.network.service.UserService;
-@Component
+
+//@Component
 public class InitQuartz implements ApplicationListener<ContextRefreshedEvent>{
 	private final static Logger LOGGER =LoggerFactory.getLogger(InitQuartz.class);
 	private static final int MAX_TIME_EXCITING_UNUSING_URL_IMAGE = 10000;
@@ -50,7 +50,7 @@ public class InitQuartz implements ApplicationListener<ContextRefreshedEvent>{
 				JobDataMap jobDataMap = JobDataMapSupport.newJobDataMap(map);
 				
 				JobDetail job = JobBuilder
-						.newJob(Job1.class)
+						.newJob(ImageCleanUpJob.class)
 						.usingJobData(jobDataMap)
 						.build();
 				
