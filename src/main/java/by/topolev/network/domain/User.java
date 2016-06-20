@@ -1,5 +1,6 @@
 package by.topolev.network.domain;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 @Entity
 public class User {
 	@Id
@@ -21,6 +24,12 @@ public class User {
 	private String username;
 	
 	private String email;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateCreateUser;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date lastSignup;
 	
 	@Column(name = "firstname", nullable = false, columnDefinition = "varchar(255) default ''")
 	private String firstname = "";
@@ -131,6 +140,22 @@ public class User {
 
 	public void setUrlAvatar(String urlAvatar) {
 		this.urlAvatar = urlAvatar;
+	}
+
+	public Date getDateCreateUser() {
+		return dateCreateUser;
+	}
+
+	public void setDateCreateUser(Date dateCreateUser) {
+		this.dateCreateUser = dateCreateUser;
+	}
+
+	public Date getLastSignup() {
+		return lastSignup;
+	}
+
+	public void setLastSignup(Date lastSignup) {
+		this.lastSignup = lastSignup;
 	}
 	
 	
