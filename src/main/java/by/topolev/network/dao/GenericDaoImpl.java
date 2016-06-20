@@ -33,9 +33,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 
 	@Override
 	public Boolean delete(T pesistance) {
-
-		em.remove(pesistance);
-
+		em.remove(em.contains(pesistance) ? pesistance : em.merge(pesistance));
 		return true;
 	}
 
@@ -46,7 +44,6 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 
 	@Override
 	public List<T> findAll() {
-		System.out.println(type.getSimpleName());
 		return em.createQuery("select c from " + type.getSimpleName() + " c").getResultList();
 	}
 

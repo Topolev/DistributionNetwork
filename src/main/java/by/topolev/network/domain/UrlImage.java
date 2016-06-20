@@ -15,7 +15,7 @@ public class UrlImage {
 	private Long id;
 	private String urlImage;
 	private boolean markUsing;
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataCreate;
 	public Long getId() {
 		return id;

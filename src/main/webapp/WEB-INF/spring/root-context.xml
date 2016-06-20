@@ -17,13 +17,15 @@
 
 	<!-- Включаем опцию использования конфигурационных аннотаций (@Annotation-based configuration)-->
 	<context:annotation-config />
-
+ 
 	<!-- Определяем папки, в которых будем автоматически искать бины-компоненты (@Component, @Service)  -->
 	<context:component-scan base-package="by.topolev.network.dao" />
 	<context:component-scan base-package="by.topolev.network.service" />
 	<context:component-scan base-package="by.topolev.network.convertor" />
 	<context:component-scan base-package="by.topolev.network.validatedata.field" />
 	<context:component-scan base-package="by.topolev.network.web.fasad" />
+	<context:component-scan base-package="by.topolev.network.quartz" />
+	
 
 	<!-- Файл с настройками ресурсов для работы с данными (Data Access Resources) -->
 	<import resource="data.xml" />
@@ -31,7 +33,8 @@
 	<!-- Файл с настройками безопасности -->
 	<import resource="security-context.xml" />
 	
-	
+	<!-- Файл с настройками Quartz -->
+	<import resource="quartz-context.xml" />
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize" value="5000000" />

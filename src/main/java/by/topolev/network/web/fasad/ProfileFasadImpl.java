@@ -37,6 +37,7 @@ public class ProfileFasadImpl implements ProfileFacade {
 	@Override
 	public void updateUser(ProfileForm profileForm) {
 		User user = userService.getAuthorizedUser();
+		
 		if (user != null) {
 			LOGGER.debug(String.format("User with id=%d is updating personal data", user.getId()));
 			String oldUrlImage = user.getUrlAvatar();
@@ -45,6 +46,8 @@ public class ProfileFasadImpl implements ProfileFacade {
 			user.setNameOrganization(profileForm.getNameOrganization());
 			try {
 				userService.updateUser(user);
+				imageService.updateUrlImageInDb(oldUrlImage, false);
+				imageService.updateUrlImageInDb(user.getUrlAvatar(), true);
 			} catch (Exception e) {
 				LOGGER.warn(String.format("User with id=%d hasn't update data", user.getId()), e);
 			}
