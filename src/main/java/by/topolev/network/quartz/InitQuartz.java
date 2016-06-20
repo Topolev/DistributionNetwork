@@ -35,7 +35,7 @@ public class InitQuartz implements ApplicationListener<ContextRefreshedEvent>{
 	private ImageService imgaeService;
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		if (event.getApplicationContext().getParent() == null){
+		/*if (event.getApplicationContext().getParent() == null){
 			System.out.println("LOAD QUARTZ");
 			SchedulerFactory sf = new StdSchedulerFactory();
 			try {
@@ -69,7 +69,7 @@ public class InitQuartz implements ApplicationListener<ContextRefreshedEvent>{
 			} catch (SchedulerException e) {
 				LOGGER.info("Can't load quartz", e);
 			}
-		}
+		}*/
 	}
 
 }
