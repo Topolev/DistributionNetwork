@@ -29,7 +29,7 @@ public class SigninController {
 	@RequestMapping(value="/signin-success", method=RequestMethod.GET)
 	public String authenticationSuccess(Authentication authentication){
 		User user = userDao.findByUsername(authentication.getName());
-		user.setLastSignup(new Date());
+		user.setLastSignin(new Date());
 		userDao.update(user);
 		System.out.println("SIGNIN SUCCESS");
 		return "redirect:calculate";

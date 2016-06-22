@@ -29,7 +29,9 @@ public class User {
 	private Date dateCreateUser;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date lastSignup;
+	private Date lastSignin;
+	
+	private boolean markNotificationInactive;
 	
 	@Column(name = "firstname", nullable = false, columnDefinition = "varchar(255) default ''")
 	private String firstname = "";
@@ -150,12 +152,20 @@ public class User {
 		this.dateCreateUser = dateCreateUser;
 	}
 
-	public Date getLastSignup() {
-		return lastSignup;
+	public Date getLastSignin() {
+		return lastSignin;
 	}
 
-	public void setLastSignup(Date lastSignup) {
-		this.lastSignup = lastSignup;
+	public void setLastSignin(Date lastSignin) {
+		this.lastSignin = lastSignin;
+	}
+
+	public boolean isMarkNotificationInactive() {
+		return markNotificationInactive;
+	}
+
+	public void setMarkNotificationInactive(boolean markNotificationInactive) {
+		this.markNotificationInactive = markNotificationInactive;
 	}
 	
 	

@@ -64,7 +64,7 @@ public class SignupController {
 		
 		User user =(User)convertor.reconvert(signupForm);
 		user.setDateCreateUser(new Date());
-		user.setLastSignup(new Date());
+		user.setLastSignin(new Date());
 		userService.create(user,"ROLE_USER");
 		
 		/*Authenntication user after registration*/

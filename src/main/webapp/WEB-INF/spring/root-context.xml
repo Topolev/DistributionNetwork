@@ -25,6 +25,7 @@
 	<context:component-scan base-package="by.topolev.network.validatedata.field" />
 	<context:component-scan base-package="by.topolev.network.web.fasad" />
 	<context:component-scan base-package="by.topolev.network.quartz" />
+	<context:component-scan base-package="by.topolev.network.classes" />
 	
 
 	<!-- Файл с настройками ресурсов для работы с данными (Data Access Resources) -->
@@ -35,6 +36,9 @@
 	
 	<!-- Файл с настройками Quartz -->
 	<import resource="quartz-context.xml" />
+	
+	<!-- Файл с найстроками Email -->
+	<import resource="email-context.xml"/>
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize" value="5000000" />

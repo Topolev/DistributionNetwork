@@ -1,0 +1,5 @@
+Dear, ${firstName}!
+You haven't visited our service since ${dataLastSignin}!
+After 2 month your account will be disabled!
+
+With the best regards!
