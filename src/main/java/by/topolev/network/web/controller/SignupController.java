@@ -1,5 +1,6 @@
 package by.topolev.network.web.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -61,20 +63,25 @@ public class SignupController {
 		}
 		
 		User user =(User)convertor.reconvert(signupForm);
+		user.setDateCreateUser(new Date());
+		user.setLastSignin(new Date());
 		userService.create(user,"ROLE_USER");
 		
 		/*Authenntication user after registration*/
-		
+		UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
 		Authentication authentication = new UsernamePasswordAuthenticationToken(
-				userDetailsService.loadUserByUsername(user.getUsername()),
+				userDetails,
 				user.getPassword(),
-				userDetailsService.loadUserByUsername(user.getUsername()).getAuthorities()
+				userDetails.getAuthorities()
 				);
 		/*Authentication authentication = new UsernamePasswordAuthenticationToken(userDetailsService.loadUserByUsername(user.getUsername()), user.getPassword());*/
 		System.out.println(authentication.getName());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
 		return "redirect:user/servicePackages";
 	}
+	
+	
 	
 	@RequestMapping(value="signup/validateField", method =RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> validateField(@RequestBody JsonValidationFieldRequest jsonRequest){

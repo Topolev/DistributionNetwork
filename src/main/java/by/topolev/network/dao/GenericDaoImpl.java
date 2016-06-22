@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,5 +56,6 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	public void setEm(EntityManager em) {
 		this.em = em;
 	}
+
 
 }

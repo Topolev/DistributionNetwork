@@ -1,5 +1,7 @@
 package by.topolev.network.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -24,7 +26,12 @@ public class UserServiceImpl implements UserService{
 	@Resource(name="profileFormConvertor")
 	private Convertor profileFormConvertor;
 	
+	private final static long TIME_IDENTITY_USER_NOT_SIGNIN_LONG = 60*60*1000; 
 	
+	public List<User> findUserNotSigninLong(){
+		List<User> list;
+		return null;
+	}
 	@Override
 	public User create(User user, String nameRole) {
 		user.setPassword(DigestUtils.md5Hex(user.getPassword()));
@@ -56,5 +63,7 @@ public class UserServiceImpl implements UserService{
 		User user = getAuthorizedUser();
 		return (ProfileForm) profileFormConvertor.convert(user);
 	}
+	
+	
 
 }
