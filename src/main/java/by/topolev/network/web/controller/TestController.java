@@ -1,26 +1,30 @@
 package by.topolev.network.web.controller;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
+import javax.json.JsonArray;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.jcabi.http.Request;
-import com.jcabi.http.request.ApacheRequest;
 import com.jcabi.http.request.JdkRequest;
-import com.jcabi.http.response.RestResponse;
+import com.jcabi.http.response.JsonResponse;
 
 @Controller
 public class TestController {
 
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
-	public String testMethod() throws IOException {
+	public String testMethod() throws Exception {
 		System.out.println("TEST");
-		String html = new JdkRequest("https://www.google.com").fetch().body();
+		String body= new JdkRequest("http://www.nbrb.by/API/ExRates/Currencies/1").fetch().as(JsonResponse.class).json().readObject().getString("Cur_Name");
+		
+		JsonArray array= new JdkRequest("http://www.nbrb.by/API/ExRates/Currencies").fetch().as(JsonResponse.class).json().readArray();
+		for (int i=0; i<array.size();i++){
+			System.out.println(array.getJsonObject(i).getString("Cur_Name"));
+			
+		}
+		
 				  
-		System.out.println(html);
+		/*System.out.println(body);*/
 		return "test";
 	}
 }
